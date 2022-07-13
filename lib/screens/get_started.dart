@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:jobnavsplash/constants/style.dart';
 
 
+
 class GetStartedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

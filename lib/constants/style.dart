@@ -18,6 +18,7 @@ TextStyle kBigLogoTextStyle = TextStyle(
     fontFamily: GoogleFonts.jockeyOne().fontFamily);
 
 
+
 EdgeInsets kBigButttonPadding =
 EdgeInsets.symmetric(vertical: 18, horizontal: 106);
 
