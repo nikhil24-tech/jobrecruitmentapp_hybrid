@@ -6,11 +6,11 @@ import 'screens/get_started.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(JobKartApp());
+  runApp(jobrecruitmentapp_hybrid());
 }
 
-class JobKartApp extends StatelessWidget {
-  JobKartApp({Key? key}) : super(key: key);
+class jobrecruitmentapp_hybrid extends StatelessWidget {
+  jobrecruitmentapp_hybrid({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

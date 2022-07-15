@@ -18,6 +18,33 @@ TextStyle kBigLogoTextStyle = TextStyle(
     fontFamily: GoogleFonts.jockeyOne().fontFamily);
 
 
+TextStyle kHeading1Style = TextStyle(
+    fontSize: 29,
+    fontWeight: FontWeight.w700,
+    color: kThemeColor1,
+    fontFamily: GoogleFonts.inter().fontFamily);
+
+
+TextStyle kGreyoutHeading4Style = TextStyle(
+  color: Color(0xFF828181),
+  fontSize: 20,
+  fontWeight: FontWeight.w400,
+  fontFamily: GoogleFonts.inter().fontFamily,
+);
+
+InputDecoration kTextFieldInputDecoration = InputDecoration(
+  contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+  fillColor: kTextFieldColor,
+  filled: true,
+  labelText: 'Provide hint text here',
+  labelStyle: kGreyoutHeading4Style,
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(12),
+    borderSide: BorderSide.none,
+  ),
+);
+
+
 EdgeInsets kBigButttonPadding =
 EdgeInsets.symmetric(vertical: 18, horizontal: 106);
 
