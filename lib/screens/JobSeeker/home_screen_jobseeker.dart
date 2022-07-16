@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../constants/style.dart';
 import '../../widgets/JobSeeker/underlined_icon_widget.dart';
 import 'HomeScreenPagesJs/js_home_page.dart';
+import 'HomeScreenPagesJs/saved_jobs_page.dart';
 
 class JobSeekerHomeScreen extends StatefulWidget {
   @override
@@ -13,7 +14,7 @@ class _JobSeekerHomeScreenState extends State<JobSeekerHomeScreen> {
   final List<Widget> _pages = [ JobSeekerHomePage(),
     JobSeekerHomePage(),
     JobSeekerHomePage(),
-    JobSeekerHomePage(),
+    SavedJobsPage(),
     JobSeekerHomePage(),];
 
   @override
