@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jobrecruitmentapp_hybrid/screens/user_type_select.dart';
 import '../../constants/style.dart';
+
 import 'email_signup.dart';
 
 class EmailLoginScreen extends StatefulWidget {
@@ -71,8 +72,6 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         style: kBigButtonStyle,
                         child: Text('Sign In', style: kBigButtonTextStyle),
                         onPressed: () async {
-                          //TODO:Implement Sign In Logic
-
 
                         }
                     ),
