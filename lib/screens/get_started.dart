@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:job_kart_flutter/constants/style.dart';
+import 'package:jobrecruitmentapp_hybrid/constants/style.dart';
+import 'package:jobrecruitmentapp_hybrid/screens/user_type_select.dart';
 
 
 class GetStartedScreen extends StatelessWidget {
@@ -44,6 +45,9 @@ class GetStartedScreen extends StatelessWidget {
                 style: kBigButtonStyle,
                 child: Text('Get Started'),
                 onPressed: () {
+                  Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => UserTypeSelectScreen()));
+
                 },
               ),
               SizedBox(height: 28)
