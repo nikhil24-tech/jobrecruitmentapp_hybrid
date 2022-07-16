@@ -27,7 +27,7 @@ TextStyle kHeading1Style = TextStyle(
     fontSize: 29,
     fontWeight: FontWeight.w700,
     color: kThemeColor1,
-    fontFamily: GoogleFonts.inter().fontFamily);
+    fontFamily: GoogleFonts.inter().fontFamily);  //TextStyle
 
 TextStyle kHeading2BoldStyle = TextStyle(
     fontSize: 20,
@@ -40,6 +40,7 @@ TextStyle kHeading2RegularStyle = TextStyle(
     fontWeight: FontWeight.w500,
     color: Color.fromRGBO(78, 77, 77, 1),
     fontFamily: GoogleFonts.inter().fontFamily);
+    fontFamily: GoogleFonts.inter().fontFamily);  //TextStyle
 
 TextStyle kHeading3DarkStyle = TextStyle(
     fontSize: 16,
@@ -119,6 +120,11 @@ ButtonStyle kSmallButtonStyle = ElevatedButton.styleFrom(
     fixedSize: Size(138, 39),
     textStyle: kSmallButtonTextStyle,
     primary: kThemeColor1);
+TextStyle kAppTextBoldWhiteStyle = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w700,
+    color: Color(0xFFFDFDFD),
+    fontFamily: GoogleFonts.inter().fontFamily);
 
 InputDecoration kTextFieldInputDecoration = InputDecoration(
   contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -145,3 +151,40 @@ InputDecoration kTextFieldInputDecorationMultiLine = InputDecoration(
     borderSide: BorderSide.none,
   ),
 );
+
+EdgeInsets kBigButttonPadding =
+EdgeInsets.symmetric(vertical: 18, horizontal: 106);
+
+TextStyle kBigButtonTextStyle = TextStyle(
+  color: Colors.white,
+  fontWeight: FontWeight.w700,
+  fontSize: 20,
+  fontFamily: GoogleFonts.inter().fontFamily,
+);  //TextStyle
+
+TextStyle kSmallButtonTextStyle = TextStyle(
+  color: Color(0xFFE5EBFA),
+  fontWeight: FontWeight.w700,
+  fontSize: 14,
+  fontFamily: GoogleFonts.inter().fontFamily,
+);
+
+
+TextStyle kAppTextDarkBoldStyle =
+kAppTextBoldWhiteStyle.copyWith(color: Color(0xFF112E6F));
+
+OutlinedBorder kBigButtonShape =
+RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
+
+ButtonStyle kBigButtonStyle = ElevatedButton.styleFrom(
+    shape: kBigButtonShape,
+    fixedSize: Size(354, 55),
+    textStyle: kBigButtonTextStyle,
+    primary: kThemeColor1);
+
+ButtonStyle kSmallButtonStyle = ElevatedButton.styleFrom(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(23)),
+    fixedSize: Size(138, 39),
+    textStyle: kSmallButtonTextStyle,
+    primary: kThemeColor1);
+
