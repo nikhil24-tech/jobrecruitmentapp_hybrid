@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jobnavsplash/constants/style.dart';
-
+import 'package:job_kart_flutter/constants/style.dart';
 
 
 class GetStartedScreen extends StatelessWidget {
