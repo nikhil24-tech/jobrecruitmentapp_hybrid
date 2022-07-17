@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jobrecruitmentapp_hybrid/screens/user_type_select.dart';
 
 import '../constants/style.dart';
+import 'Employer/home_screen_employer.dart';
 import 'JobSeeker/home_screen_jobseeker.dart';
 
 class EmailSignUpScreen extends StatefulWidget {
@@ -113,11 +114,11 @@ class _EmailSignUpScreenState extends State<EmailSignUpScreen> {
                               ? Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => JobSeekerHomeScreen()),
+                                builder: (context) =>  EmployerHomeScreen()),
                           ) : Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => JobSeekerHomeScreen()),
+                                builder: (context) =>JobSeekerHomeScreen()),
                           );
 
                         }
