@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../constants/style.dart';
 import '../../widgets/JobSeeker/underlined_icon_widget.dart';
 import 'HomeScreenPagesJs/js_home_page.dart';
+import 'HomeScreenPagesJs/js_search_page.dart';
 import 'HomeScreenPagesJs/saved_jobs_page.dart';
 
 class JobSeekerHomeScreen extends StatefulWidget {
@@ -12,8 +13,8 @@ class JobSeekerHomeScreen extends StatefulWidget {
 class _JobSeekerHomeScreenState extends State<JobSeekerHomeScreen> {
   int currentIndexOfBNB = 0; //BNB is Bottom Navigation Bar
   final List<Widget> _pages = [ JobSeekerHomePage(),
-    JobSeekerHomePage(),
-    JobSeekerHomePage(),
+
+    JobSeekerSearchPage(),JobSeekerHomePage(),
     SavedJobsPage(),
     JobSeekerHomePage(),];
 
