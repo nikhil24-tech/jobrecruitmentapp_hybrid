@@ -15,9 +15,6 @@ class _EmployerHomeScreenState extends State<EmployerHomeScreen> {
   final List<Widget> _pages = [
     Center(child: jobsPage()),
     Center(child: AddEditJobsPage()),
-    Center(child: AddEditJobsPage()),
-    Center(child: AddEditJobsPage()),
-    Center(child: AddEditJobsPage()),
   ];
 
   @override

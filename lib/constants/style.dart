@@ -11,6 +11,9 @@ Color kBlackColor1 = const Color(0xFF040404);
 Color kDeleteRedColor = const Color(0xFFFF0303);
 Color kContainerBackgroundColor = const Color.fromRGBO(226, 225, 225, 0.46);
 
+const String kLogoImageUrl =
+    "https://firebasestorage.googleapis.com/v0/b/jobkart-46567.appspot.com/o/userProfileImages%2FJobKartLogo.png?alt=media&token=8164c65f-210b-410a-a6cc-1cd4b52770bd";
+
 TextStyle kBigLogoTextStyle = TextStyle(
     color: kThemeColor1,
     fontSize: 80,

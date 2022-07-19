@@ -8,7 +8,6 @@ import 'email_login.dart';
 enum UserType { employer, jobseeker, admin }
 
 class UserTypeSelectScreen extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
