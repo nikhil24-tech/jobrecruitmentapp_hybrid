@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants/style.dart';
+import '../../../models/job_profile.dart';
+import '../../../services/job_kart_db_service.dart';
+import '../../../widgets/job_listing_widget.dart';
 
 class JobSeekerSearchPage extends StatefulWidget {
   @override
@@ -8,7 +11,7 @@ class JobSeekerSearchPage extends StatefulWidget {
 }
 
 class _JobSeekerSearchPageState extends State<JobSeekerSearchPage> {
-
+  List<JobProfile>? jobProfileSearchResults;
 
   final _searchController = TextEditingController();
 
@@ -29,14 +32,18 @@ class _JobSeekerSearchPageState extends State<JobSeekerSearchPage> {
               Flexible(
                 child: TextField(
                   controller: _searchController,
-                  decoration: kTextFieldInputDecoration.copyWith(
-                      labelText: "Search"),
+                  decoration:
+                  kTextFieldInputDecoration.copyWith(labelText: "Search"),
                 ),
               ),
               SizedBox(width: 10),
               IconButton(
                 icon: Icon(Icons.search, size: 30),
-                onPressed: ()  {
+                onPressed: () async {
+                  //TODO: search for jobs
+                  jobProfileSearchResults = await JobsDBService.searchJobs(
+                      _searchController.text.trim());
+                  setState(() {});
                 },
               ),
             ],
@@ -83,9 +90,20 @@ class _JobSeekerSearchPageState extends State<JobSeekerSearchPage> {
           ),
           SizedBox(height: 40),
 
-          //Search Results List view will be here
+          //Search Results List view
 
-
+          if (jobProfileSearchResults == null) Text("") else Flexible(
+            child: ListView.builder(
+              itemCount: jobProfileSearchResults!.length,
+              itemBuilder: ((context, index) {
+                return Column(
+                  children: [
+                    SizedBox(height: 15),
+                  ],
+                );
+              }),
+            ),
+          ),
         ],
       ),
     );
