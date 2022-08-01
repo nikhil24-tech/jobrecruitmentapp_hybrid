@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../constants/style.dart';
 import '../../widgets/JobSeeker/underlined_icon_widget.dart';
+import 'HomeScreenPagesAdmin/admin_home_page.dart';
+import 'HomeScreenPagesAdmin/admin_setting_page.dart';
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({Key? key}) : super(key: key);
 
@@ -12,10 +14,11 @@ class AdminHomeScreen extends StatefulWidget {
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
   int currentIndexOfBNB = 0; //BNB is Bottom Navigation Bar
   final List<Widget> _pages = [
+    AdminHomePage(),
     //AdminHomePage(),
     //AdminHomePage(),
-    //AdminHomePage(),
-    //AdminHomePage()
+    AdminSettingsPage()
+
   ];
   @override
   Widget build(BuildContext context) {
