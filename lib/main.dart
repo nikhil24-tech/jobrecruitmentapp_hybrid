@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'screens/get_started.dart';
 
@@ -5,9 +6,11 @@ import 'screens/get_started.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await Firebase.initializeApp();
   runApp(jobrecruitmentapp_hybrid());
 }
+
+
 
 class jobrecruitmentapp_hybrid extends StatelessWidget {
   jobrecruitmentapp_hybrid({Key? key}) : super(key: key);
