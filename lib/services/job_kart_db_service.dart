@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../constants/style.dart';
 import '../models/jk_user.dart';
 import '../models/job_profile.dart';
@@ -28,7 +27,7 @@ class JobsDBService {
     //write a function to search for jobs based on the search keywords
     try {
       QuerySnapshot querySnapshot = await jobCollectionReferece
-          .where('jobName', isGreaterThanOrEqualTo: searchKeyword)
+          .where('jobName', isEqualTo: searchKeyword)
           .get();
       List<JobProfile> jobs = querySnapshot.docs.map((doc) {
         return JobProfile.fromDocument(doc);
@@ -166,46 +165,19 @@ class AppliedJobsDBService {
   static Future<void> saveAppliedJobData({required appliedJobData}) async {
     //write a function to save JKUser model class data to firestore
     try {
-      await appliedJobCollectionReferece.add(appliedJobData);
-    } on FirebaseException catch (error) {
-      print(error.message);
-    }
-  }
-
-  //write a function to update isApproved field to true in firestore based on jobID
-
-  static Future<void> approveJob({required String jobID}) async {
-    try {
       await appliedJobCollectionReferece
-          .doc(jobID)
-          .update({'isApproved': true});
+          .doc(appliedJobData[
+      "jobID"]) // Setting Job ID as the doc Id of applied jobs collection docs
+          .set(appliedJobData);
     } on FirebaseException catch (error) {
       print(error.message);
     }
   }
 
-  //write a function to update isApproved field to false in firestore based on jobID
-
-  static Future<void> rejectJob({required String jobID}) async {
+  //write a function to delete a job listing from firestore
+  static Future<void> deleteJobPosting({required String jobID}) async {
     try {
-      await appliedJobCollectionReferece
-          .doc(jobID)
-          .update({'isApproved': false});
-    } on FirebaseException catch (error) {
-      print(error.message);
-    }
-  }
-
-  //write a function to delete all documents in appliedJobCollectionReferece where jobID is equal to jobID
-  static Future<void> deleteAppliedJobByJobID({required String jobID}) async {
-    try {
-      var docsToBeDeleted = await appliedJobCollectionReferece
-          .where('jobID', isEqualTo: jobID)
-          .get();
-
-      for (var doc in docsToBeDeleted.docs) {
-        await doc.reference.delete();
-      }
+      await appliedJobCollectionReferece.doc(jobID).delete();
     } on FirebaseException catch (error) {
       print(error.message);
     }
@@ -311,75 +283,16 @@ class UserDBService {
     return jKUser;
   }
 
-//write a function to get orgImageUrl from userCollectionReferece based on email
-  static Future<String?> getOrgImageUrl(String email) async {
+//write a function to get imageUrl from userCollectionReferece based on email
+  static Future<String?> getImageUrl(String email) async {
     try {
       var userTypeDocQuerySnapshot =
       await userCollectionReferece.where("email", isEqualTo: email).get();
-      String? imageUrl = userTypeDocQuerySnapshot.docs[0].get("orgImageUrl");
+      String? imageUrl = userTypeDocQuerySnapshot.docs[0].get("imageUrl");
       return imageUrl;
     } on FirebaseException catch (error) {
       print(error.message);
       return kLogoImageUrl;
-    }
-  }
-
-  //write a function to get jsImageUrl from userCollectionReferece based on email
-  static Future<String?> getJSImageUrl(String email) async {
-    try {
-      var userTypeDocQuerySnapshot =
-      await userCollectionReferece.where("email", isEqualTo: email).get();
-      String? imageUrl = userTypeDocQuerySnapshot.docs[0].get("jsImageUrl");
-      return imageUrl;
-    } on FirebaseException catch (error) {
-      print(error.message);
-      return kLogoImageUrl;
-    }
-  }
-
-  //write a function to update the field isBlocked to true base on email
-
-  static Future<void> blockUser({required String email}) async {
-    try {
-      var userTypeDocQuerySnapshot =
-      await userCollectionReferece.where("email", isEqualTo: email).get();
-      await userCollectionReferece
-          .doc(userTypeDocQuerySnapshot.docs[0].id)
-          .update({"isBlocked": true});
-    } on FirebaseException catch (error) {
-      print(error.message);
-    }
-  }
-
-  //write a function to update the field isBlocked to false base on email
-
-  static Future<void> UnBlockUser({required String email}) async {
-    try {
-      var userTypeDocQuerySnapshot =
-      await userCollectionReferece.where("email", isEqualTo: email).get();
-      await userCollectionReferece
-          .doc(userTypeDocQuerySnapshot.docs[0].id)
-          .update({"isBlocked": false});
-    } on FirebaseException catch (error) {
-      print(error.message);
-    }
-  }
-
-  //write a function to get the field isBlocked based on email
-  static Future<bool?> getIsBlocked({required String email}) async {
-    try {
-      var userTypeDocQuerySnapshot =
-      await userCollectionReferece.where("email", isEqualTo: email).get();
-      if (userTypeDocQuerySnapshot.docs == [] ||
-          userTypeDocQuerySnapshot.docs.isEmpty) {
-        return null;
-      } else {
-        bool isBlocked = userTypeDocQuerySnapshot.docs[0].get("isBlocked");
-        return isBlocked;
-      }
-    } on FirebaseException catch (error) {
-      print(error.message);
-      return null;
     }
   }
 }
