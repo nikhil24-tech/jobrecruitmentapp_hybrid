@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jobrecruitmentapp_hybrid/constants/style.dart';
-import 'package:jobrecruitmentapp_hybrid/screens/user_type_select.dart';
-
+import '../constants/style.dart';
+import 'user_type_select.dart';
 
 class GetStartedScreen extends StatelessWidget {
   @override
@@ -46,8 +45,9 @@ class GetStartedScreen extends StatelessWidget {
                 child: Text('Get Started'),
                 onPressed: () {
                   Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => UserTypeSelectScreen()));
-
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserTypeSelectScreen()));
                 },
               ),
               SizedBox(height: 28)

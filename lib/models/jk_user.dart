@@ -1,77 +1,126 @@
 // write a model class for a user in email_sign_up.dart:
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:jobrecruitmentapp_hybrid/constants/style.dart';
+
+import '../constants/style.dart';
 
 class JKUser {
-  String? address;
-  String? email;
-  String? imageUrl;
-  String? name;
-  String? occupation;
-  String? orgName;
-  String? organisationType;
-  String? password;
-  String? phone;
-  String? uid;
+  //Common fields for all users
   String? userType;
-  String? aboutMe;
-  String? educationLevel;
-  String? jobExperience;
-  String? skills;
+  String? email;
+  String? uid;
+  String? password;
+  bool? isBlocked;
 
-  JKUser(
-      {required this.userType,
-      this.name,
-      this.email,
-      this.phone,
-      this.occupation,
-      this.organisationType,
-      this.password,
-      this.uid,
-      this.orgName,
-      this.address,
-      this.imageUrl,
-      this.aboutMe,
-      this.educationLevel,
-      this.jobExperience,
-      this.skills});
+  //Employer specific fields
+  String? empName;
+  String? orgImageUrl;
+  String? empPhone;
+  String? orgType;
+  String? orgName;
+  String? orgAddress;
+  String? orgLocation;
+
+  //Jobseeker specific fields
+  String? jsName;
+  String? jsImageUrl;
+  String? jsPhone;
+  String? jsOccupation;
+  String? jsAddress;
+  String? jsLocation;
+  String? jsEduLevel;
+  String? jsJobXp;
+  String? jsSkills;
+  String? jsAboutMe;
+
+  JKUser({
+    //common fields for all users
+    required this.userType,
+    this.isBlocked = false,
+    this.password,
+    this.uid,
+    //employer specific fields
+    this.empName,
+    this.email,
+    this.orgImageUrl,
+    this.empPhone,
+    this.orgType,
+    this.orgName,
+    this.orgAddress,
+    this.orgLocation,
+
+    //jobseeker specific fields
+    this.jsName,
+    this.jsImageUrl,
+    this.jsPhone,
+    this.jsOccupation,
+    this.jsAddress,
+    this.jsLocation,
+    this.jsEduLevel,
+    this.jsJobXp,
+    this.jsSkills,
+    this.jsAboutMe,
+  });
 
   JKUser.fromDocument(QueryDocumentSnapshot data) {
+    //common fields for all users
     userType = data.get('userType');
-    name = data.get('name') ?? "Enter Name";
-    email = data.get('email') ?? "Enter Email";
-    phone = data.get('phone') ?? "Enter Phone";
-    occupation = data.get('occupation') ?? "Enter Occupation";
-    organisationType =
-        data.get('organisationType') ?? "Enter Organisation Type";
+    email = data.get('email') ?? "Enter email";
     password = data.get('password') ?? "Enter Password";
     uid = data.get('uid') ?? "Enter UID";
+    isBlocked = data.get('isBlocked') ?? false;
+
+    //employer specific fields
+
+    empName = data.get('empName') ?? "Enter empName";
+    orgImageUrl = data.get('orgImageUrl') ?? kLogoImageUrl;
+    empPhone = data.get('empPhone') ?? "Enter Phone";
+    orgType = data.get('orgType') ?? "Enter Organisation Type";
     orgName = data.get('orgName') ?? "Enter Organisation Name";
-    address = data.get('address') ?? "Enter Address";
-    imageUrl = data.get('imageUrl') ?? kLogoImageUrl;
-    aboutMe = data.get('aboutMe') ?? "Enter About Me";
-    educationLevel = data.get('educationLevel') ?? "Enter Education Level";
-    jobExperience = data.get('jobExperience') ?? "Enter Job Experience";
-    skills = data.get('skills') ?? "Enter Skills";
+    orgAddress = data.get('orgAddress') ?? "Enter orgLocation ";
+    orgLocation = data.get('orgLocation') ?? "Enter orgLocation";
+
+    //jobseeker specific fields
+    jsName = data.get('jsName') ?? "Enter Name";
+    jsImageUrl = data.get('jsImageUrl') ?? kLogoImageUrl;
+    jsPhone = data.get('jsPhone') ?? "Enter Phone";
+    jsOccupation = data.get('jsOccupation') ?? "Enter Occupation";
+    jsAddress = data.get('jsAddress') ?? "Enter Address";
+    jsLocation = data.get('jsLocation') ?? "Enter Location";
+    jsEduLevel = data.get('jsEduLevel') ?? "Enter Education Level";
+    jsJobXp = data.get('jsJobXp') ?? "Enter Job Experience";
+    jsSkills = data.get('jsSkills') ?? "Enter Skills";
+    jsAboutMe = data.get('jsAboutMe') ?? "Enter About Me";
   }
 
   Map<String, dynamic> toJson() {
     return {
+      //common fields for all users
       'userType': userType,
-      'name': name ?? "Enter Name",
       'email': email ?? "Enter Email",
-      'phone': phone ?? "Enter Phone",
-      'occupation': occupation ?? "Enter Occupation",
-      'organisationType': organisationType ?? "Enter Organisation Type",
       'password': password ?? "Enter Password",
       'uid': uid ?? "Enter UID",
+      'isBlocked': isBlocked ?? false,
+
+      //employer specific fields
+      'empName': empName ?? "Enter Name",
+      'orgImageUrl': orgImageUrl ?? kLogoImageUrl,
+      'empPhone': empPhone ?? "Enter Phone",
+      'orgType': orgType ?? "Enter Organisation Type",
       'orgName': orgName ?? "Enter Organisation Name",
-      'address': address ?? "Enter Address",
-      'imageUrl': imageUrl ?? kLogoImageUrl,
-      'aboutMe': aboutMe ?? "Enter About Me",
-      'educationLevel': educationLevel ?? "Enter Education Level",
-      'jobExperience': jobExperience ?? "Enter Job Experience",
-      'skills': skills ?? "Enter Skills",
+      'orgAddress': orgAddress ?? "Enter Organisation Address",
+      'orgLocation': orgLocation ?? "Enter Address",
+
+      //jobseeker specific fields
+      'jsName': jsName ?? "Enter Name",
+      'jsImageUrl': jsImageUrl ?? kLogoImageUrl,
+      'jsPhone': jsPhone ?? "Enter Phone",
+      'jsOccupation': jsOccupation ?? "Enter Occupation",
+      'jsAddress': jsAddress ?? "Enter Address",
+      'jsLocation': jsLocation ?? "Enter Location",
+      'jsEduLevel': jsEduLevel ?? "Enter Education Level",
+      'jsJobXp': jsJobXp ?? "Enter Job Experience",
+      'jsSkills': jsSkills ?? "Enter Skills",
+      'jsAboutMe': jsAboutMe ?? "Enter About Me",
     };
   }
 }

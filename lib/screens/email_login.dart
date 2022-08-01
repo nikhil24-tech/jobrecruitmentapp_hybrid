@@ -2,11 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jobrecruitmentapp_hybrid/screens/user_type_select.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../constants/style.dart';
 import '../controllers/login_signup_validators.dart';
 import '../controllers/navigate_to_home_screen.dart';
-import 'email_signup.dart';
+import '../services/job_kart_db_service.dart';
+import '../widgets/motion_toasts.dart';
+import 'email_sign_up.dart';
 
 class EmailLoginScreen extends StatefulWidget {
   final UserType userType;
@@ -15,6 +16,8 @@ class EmailLoginScreen extends StatefulWidget {
   @override
   State<EmailLoginScreen> createState() => _EmailLoginScreenState();
 }
+
+bool isLoggingIn = false;
 
 class _EmailLoginScreenState extends State<EmailLoginScreen> {
   String _errorMessage = '';
@@ -64,6 +67,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                     ),
                     SizedBox(height: 12),
                     TextFormField(
+                      obscureText: true,
                       style: kHeading2RegularStyle,
                       controller: _passwordController,
                       decoration: kTextFieldInputDecoration.copyWith(
@@ -74,31 +78,70 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                     SizedBox(height: 50),
                     ElevatedButton(
                       style: kBigButtonStyle,
-                      child: Text('Sign In', style: kBigButtonTextStyle),
-                      onPressed: () async {
-                        //TODO:Implement Sign In Logic
-
+                      child: isLoggingIn == true
+                          ? Text('Signing In', style: kBigButtonTextStyle)
+                          : Text('Sign In', style: kBigButtonTextStyle),
+                      onPressed: isLoggingIn == true
+                          ? null
+                          : () async {
                         if (_signInFormKey.currentState!.validate()) {
-                          try {
-                            UserCredential _userCred = await FirebaseAuth
-                                .instance
-                                .signInWithEmailAndPassword(
-                                email: _emailTextController.text.trim(),
-                                password: _passwordController.text.trim());
+                          setState(() {
+                            isLoggingIn = true;
+                          });
+                          bool? isUserBlocked =
+                          await UserDBService.getIsBlocked(
+                              email: _emailTextController.text);
+                          print("user blocked: $isUserBlocked");
+                          if (isUserBlocked == null) {
+                            setState(() {
+                              isLoggingIn = false;
+                            });
+                            errorrToast(context, "User doesn't exist",
+                                kBigButtonTextStyle);
+                          } else if (isUserBlocked == false) {
+                            //Login if the user is not blocked
+                            try {
+                              UserCredential _userCred =
+                              await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                  email: _emailTextController.text
+                                      .trim(),
+                                  password: _passwordController
+                                      .text
+                                      .trim());
 
-                            //saving user email to cache
-                            final userDataCache =
-                            await SharedPreferences.getInstance();
-                            await userDataCache.setString('loggedInUserEmail',
-                                _emailTextController.text.trim());
+                              //saving user email to cache
+                              final userDataCache =
+                              await SharedPreferences.getInstance();
+                              await userDataCache.setString(
+                                  'loggedInUserEmail',
+                                  _emailTextController.text.trim());
 
-                            await navigateToHomeScreen(
-                                userCred: _userCred, context: context);
-                          } on FirebaseAuthException catch (error) {
-                            setState(() => _errorMessage = error.message!);
-                            errorToast(
+                              await navigateToHomeScreen(
+                                  userCred: _userCred, context: context);
+                              //set isLogingIn to false
+                              setState(() {
+                                isLoggingIn = false;
+                              });
+                            } on FirebaseAuthException catch (error) {
+                              setState(
+                                      () => _errorMessage = error.message!);
+                              setState(() {
+                                isLoggingIn = false;
+                              });
+                              infoToast(
+                                  context,
+                                  _errorMessage,
+                                  kSmallButtonTextStyle.copyWith(
+                                      color: Colors.white, fontSize: 16));
+                            }
+                          } else {
+                            setState(() {
+                              isLoggingIn = false;
+                            });
+                            infoToast(
                                 context,
-                                _errorMessage,
+                                'Your account is blocked. Please contact admin.',
                                 kSmallButtonTextStyle.copyWith(
                                     color: Colors.white, fontSize: 16));
                           }

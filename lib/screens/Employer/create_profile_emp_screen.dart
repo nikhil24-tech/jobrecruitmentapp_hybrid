@@ -2,19 +2,23 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:motion_toast/motion_toast.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants/style.dart';
 import '../../controllers/login_signup_validators.dart';
 import '../../models/jk_user.dart';
 import '../../services/job_kart_db_service.dart';
+import '../../widgets/motion_toasts.dart';
 import 'home_screen_employer.dart';
 
 bool isUploading = false;
 
 class EmployerCreateProfileScreen extends StatefulWidget {
-  String? docIdToUpdate;
-  EmployerCreateProfileScreen({this.docIdToUpdate});
+  final String? docIdToUpdate;
+  String? userEmail;
+  bool? isNavigatingFromSettingsPage;
+
+  EmployerCreateProfileScreen(
+      {this.docIdToUpdate, this.userEmail, this.isNavigatingFromSettingsPage});
 
   @override
   State<EmployerCreateProfileScreen> createState() =>
@@ -27,15 +31,17 @@ class _EmployerCreateProfileScreenState
   @override
   void initState() {
     super.initState();
-    // setTextFieldValuesFromDB();
+    setTextFieldValuesFromDB();
   }
 
 //Textediting controllers for form fields
 
   TextEditingController _orgNameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _orgTypeController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
+  TextEditingController _locationController = TextEditingController();
 
 //Form key for form validation
   final _empProfileFormKey = GlobalKey<FormState>();
@@ -44,8 +50,6 @@ class _EmployerCreateProfileScreenState
 // when user clicks on the image picker button
   File? image;
 
-  String? userEmail; //variable to store the user email we get from the provider
-
 //An empty image file which is used to create an image from
 //image url we get from the firestore if user has image url in the firestore
   Image? profileImage;
@@ -53,33 +57,37 @@ class _EmployerCreateProfileScreenState
 //variable to temporarily store Profile pic image url from firebase storage
 //before it is updated  in firestore
   String? uploadedImageUrl;
-//
-// //initialize the form fields with the values of the profile if it is being updated
-//   void setTextFieldValuesFromDB() async {
-//     GoogleSignInProvider _googleSignInProvider =
-//         Provider.of<GoogleSignInProvider>(context, listen: false);
-//     var currentUser = await _googleSignInProvider.currentUser;
-//     //get the user email from provider and save in variable
-//     userEmail = currentUser!.email;
-//
-// //Method called by init state .When docIdToUpdate is null it means the user is
-// //old account and we are NOT signing up for a new account and data
-// //exists in Firebase and need to load it
-//     if (widget.docIdToUpdate == null) {
-//       JKUser empProfile =
-//           await UserDBService.getEmployerProfile(email: currentUser.email);
-//       setState(() {
-//         _orgNameController.text = empProfile.orgName ?? "orgName";
-//         _phoneController.text = empProfile.phone ?? "phone";
-//         _orgTypeController.text = empProfile.organisationType ?? "orgType";
-//         _addressController.text = empProfile.address ?? "address";
-//         profileImage =
-//             Image.network(empProfile.imageUrl!, height: 100, width: 100);
-//       });
-//     } else {
-//       print("New account. Data does not exist in Firebase");
-//     }
-//   }
+
+//initialize the form fields with the values of the profile if it is being updated
+  void setTextFieldValuesFromDB() async {
+//If user navigates to this page from settings page then read email
+//from cache
+    if (widget.isNavigatingFromSettingsPage != null &&
+        widget.isNavigatingFromSettingsPage == true) {
+      final userDataCache = await SharedPreferences.getInstance();
+      widget.userEmail = await userDataCache.getString("loggedInUserEmail")!;
+    }
+
+//Method called by init state .When docIdToUpdate is null it means the user is
+//old account and we are NOT signing up for a new account and data
+//exists in Firebase and need to load it
+    if (widget.docIdToUpdate == null) {
+      JKUser empProfile =
+      await UserDBService.getEmployerProfile(email: widget.userEmail!);
+      setState(() {
+        _emailController.text = empProfile.email ?? "email";
+        _orgNameController.text = empProfile.orgName ?? "orgName";
+        _phoneController.text = empProfile.empPhone ?? "phone";
+        _orgTypeController.text = empProfile.orgType ?? "orgType";
+        _addressController.text = empProfile.orgAddress ?? "address";
+        _locationController.text = empProfile.orgLocation ?? "location";
+        profileImage =
+            Image.network(empProfile.orgImageUrl!, height: 100, width: 100);
+      });
+    } else {
+      print("New account. Data does not exist in Firebase");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +107,7 @@ class _EmployerCreateProfileScreenState
                   SizedBox(height: 20),
                   Align(
                       alignment: Alignment.centerLeft,
-                      child: Text("Create Profile", style: kHeading1Style)),
+                      child: Text("Profile", style: kHeading1Style)),
                   SizedBox(height: 15),
                   Row(
                     children: [
@@ -126,6 +134,14 @@ class _EmployerCreateProfileScreenState
                       validator: notNullValidator,
                       decoration: kTextFieldInputDecoration.copyWith(
                           labelText: "Organisation Name")),
+                  SizedBox(height: 12),
+                  TextFormField(
+                    // enabled: false,
+                      style: kHeading2RegularStyle,
+                      controller: _emailController,
+                      validator: notNullValidator,
+                      decoration: kTextFieldInputDecoration.copyWith(
+                          labelText: "email")),
 
                   SizedBox(height: 12),
                   TextFormField(
@@ -148,7 +164,15 @@ class _EmployerCreateProfileScreenState
                       validator: notNullValidator,
                       decoration: kTextFieldInputDecoration.copyWith(
                           labelText: "Address")),
-                  SizedBox(height: 64),
+                  SizedBox(height: 12),
+                  TextFormField(
+                      style: kHeading2RegularStyle,
+                      controller: _locationController,
+                      validator: notNullValidator,
+                      decoration: kTextFieldInputDecoration.copyWith(
+                          labelText: "Location")),
+
+                  SizedBox(height: 12),
 
                   //Update profile button
                   ElevatedButton(
@@ -159,44 +183,47 @@ class _EmployerCreateProfileScreenState
                     onPressed: isUploading == true
                         ? null
                         : () async {
-                            if (_empProfileFormKey.currentState!.validate()) {
-                              //set isUploading to true
-                              setState(() {
-                                isUploading = true;
-                              });
+                      if (_empProfileFormKey.currentState!.validate()) {
+                        //set isUploading to true
+                        setState(() {
+                          isUploading = true;
+                        });
 
-                              //uploading profile pic to firebase storage
-                              uploadedImageUrl =
-                                  await UserDBService.uploadUserDPToFirebase(
-                                      imageFile: image);
+                        //uploading profile pic to firebase storage
+                        uploadedImageUrl =
+                        await UserDBService.uploadUserDPToFirebase(
+                            imageFile: image);
 
-                              setState(() {});
+                        setState(() {});
 
-                              // setEmpImageUrlInCache()
-                              final userDataCache =
-                                  await SharedPreferences.getInstance();
-                              // saving the image url in shared prefs
-                              await userDataCache.setString(
-                                  'loggedInUserImageUrl',
-                                  uploadedImageUrl ?? kLogoImageUrl);
+                        // setEmpImageUrlInCache()
+                        final userDataCache =
+                        await SharedPreferences.getInstance();
+                        // saving the image url in shared prefs
+                        await userDataCache.setString(
+                            'loggedInUserImageUrl',
+                            uploadedImageUrl ?? kLogoImageUrl);
 
-                              //updating form data in firestore
+                        //updating form data in firestore
 
-                              await updateUserDataInFirebase();
+                        await updateUserDataInFirebase();
 
-                              //set isUploading to false
-                              setState(() {
-                                isUploading = false;
-                              });
-
-                              //Navigate to home screen once profile update is complete
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          EmployerHomeScreen()));
-                            }
-                          },
+                        //set isUploading to false
+                        setState(() {
+                          isUploading = false;
+                        });
+                        infoToast(context, "Profile Updated",
+                            kBigButtonTextStyle);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EmployerHomeScreen(),
+                          ),
+                        );
+                        successToast(context, "Profile Updated",
+                            kBigButtonTextStyle);
+                      }
+                    },
                   )
                 ],
               ),
@@ -208,21 +235,31 @@ class _EmployerCreateProfileScreenState
   }
 
   Future<void> updateUserDataInFirebase() async {
-    var jsProfileData = {
+    //Update the image url in firestore if it is not null
+    var jsProfileData = uploadedImageUrl == null
+        ? {
       'userType': "employer",
       'orgName': _orgNameController.text.trim(),
-      'phone': _phoneController.text,
-      'email': userEmail,
-      'organisationType': _orgTypeController.text,
-      'address': _addressController.text,
-      'imageUrl': uploadedImageUrl ?? kLogoImageUrl
+      'empPhone': _phoneController.text.trim(),
+      'orgType': _orgTypeController.text.trim(),
+      'orgLocation': _locationController.text.trim(),
+      'orgAddress': _addressController.text.trim(),
+    }
+        : {
+      'userType': "employer",
+      'orgName': _orgNameController.text.trim().trim(),
+      'empPhone': _phoneController.text.trim(),
+      'orgType': _orgTypeController.text.trim(),
+      'orgLocation': _locationController.text.trim(),
+      'orgAddress': _addressController.text.trim(),
+      'orgImageUrl': uploadedImageUrl
     };
     //New user updated via DocID and old user udated by email
     widget.docIdToUpdate != null
         ? await UserDBService.updateUserDataByDocID(
-            updateDocId: widget.docIdToUpdate, userData: jsProfileData)
+        updateDocId: widget.docIdToUpdate, userData: jsProfileData)
         : await UserDBService.updateUserDataByEmail(
-            email: userEmail, userData: jsProfileData);
+        email: widget.userEmail, userData: jsProfileData);
   }
 
   Future<void> pickImage() async {
@@ -239,8 +276,8 @@ class _EmployerCreateProfileScreenState
       });
     } else {
       MotionToast.info(
-              description: Text("Picture upload cancelled by user",
-                  style: kBigButtonTextStyle))
+          description: Text("Picture upload cancelled by user",
+              style: kBigButtonTextStyle))
           .show(context);
     }
   }
