@@ -1,15 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jobrecruitmentapp_hybrid/screens/user_type_select.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants/style.dart';
 import '../controllers/login_signup_validators.dart';
 import '../models/jk_user.dart';
 import '../services/job_kart_db_service.dart';
+import 'package:jobrecruitmentapp_hybrid/widgets/motion_toasts.dart';
 import 'Employer/create_profile_emp_screen.dart';
+import 'JobSeeker/js_create_profile.dart';
 import 'email_login.dart';
 
 class EmailSignUpScreen extends StatefulWidget {
-  UserType userType;
+  final UserType userType;
 
   EmailSignUpScreen({required this.userType});
 
@@ -21,13 +24,11 @@ class _EmailSignUpScreenState extends State<EmailSignUpScreen> {
   //TextEditing Controllers for the text input fields
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
-  TextEditingController _occupationController = TextEditingController();
-  TextEditingController _organisationController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _passwordConfirmController = TextEditingController();
 
   final _signUpFormKey = GlobalKey<FormState>();
+  bool isLoading = false;
 
   String _errorMessage = '';
 
@@ -77,32 +78,13 @@ class _EmailSignUpScreenState extends State<EmailSignUpScreen> {
                           labelText: "Email"),
                       validator: emailValidator,
                     ),
-                    SizedBox(height: 12),
-                    TextFormField(
-                      style: kHeading2RegularStyle,
-                      controller: _phoneController,
-                      decoration: kTextFieldInputDecoration.copyWith(
-                          labelText: "Phone"),
-                      validator: phoneValidator,
-                    ),
+
                     SizedBox(height: 12),
                     // Different value of label based on the user type
 
                     TextFormField(
                       style: kHeading2RegularStyle,
-                      controller: widget.userType == UserType.employer
-                          ? _organisationController
-                          : _occupationController,
-                      decoration: kTextFieldInputDecoration.copyWith(
-                          labelText: (widget.userType == UserType.employer)
-                              ? "Organisation Type"
-                              : "Occupation"),
-                      validator: orgOrOccupationValidator,
-                    ),
-
-                    SizedBox(height: 12),
-                    TextFormField(
-                      style: kHeading2RegularStyle,
+                      obscureText: true,
                       controller: _passwordController,
                       decoration: kTextFieldInputDecoration.copyWith(
                           labelText: "Password"),
@@ -111,6 +93,7 @@ class _EmailSignUpScreenState extends State<EmailSignUpScreen> {
                     SizedBox(height: 12),
                     TextFormField(
                       style: kHeading2RegularStyle,
+                      obscureText: true,
                       controller: _passwordConfirmController,
                       decoration: kTextFieldInputDecoration.copyWith(
                           labelText: "Confirm Password "),
@@ -119,29 +102,55 @@ class _EmailSignUpScreenState extends State<EmailSignUpScreen> {
                     SizedBox(height: 50),
                     ElevatedButton(
                       style: kBigButtonStyle,
-                      child: Text('Sign Up', style: kBigButtonTextStyle),
-                      onPressed: () async {
+                      child: isLoading == true
+                          ? Text('Signing Up...', style: kBigButtonTextStyle)
+                          : Text('Sign Up', style: kBigButtonTextStyle),
+                      onPressed: isLoading == true
+                          ? null
+                          : () async {
                         //Once sign up is successful, navigate to create profile screen
 
                         if (_signUpFormKey.currentState!.validate()) {
-                          if (_passwordController.text ==
-                              _passwordConfirmController.text) {
+                          if (_passwordController.text.trim() ==
+                              _passwordConfirmController.text.trim()) {
+                            //set the loading to true
+                            setState(() {
+                              isLoading = true;
+                            });
+
                             String? docID = await createUser();
+
+                            //saving user email to cache
+                            final userDataCache =
+                            await SharedPreferences.getInstance();
+                            await userDataCache.setString(
+                                'loggedInUserEmail',
+                                _emailController.text.trim());
+
                             if (docID != null) {
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (context) {
-                                    return widget.userType == UserType.employer
+                                    return widget.userType ==
+                                        UserType.employer
                                         ? EmployerCreateProfileScreen(
-                                        docIdToUpdate: docID)
-                                        : EmployerCreateProfileScreen(
-                                        docIdToUpdate: docID);
+                                        docIdToUpdate: docID,
+                                        userEmail:
+                                        _emailController.text.trim())
+                                        : JSCreateProfileScreen(
+                                        docIdToUpdate: docID,
+                                        userEmail:
+                                        _emailController.text.trim());
                                   }));
                             }
+                            //set the loading to false
+                            setState(() {
+                              isLoading = false;
+                            });
                           } else {
-                            setState(
-                                    () => _errorMessage = "Passwords do not match");
-                            errorToast(
-                                context, _errorMessage, kBigButtonTextStyle);
+                            setState(() =>
+                            _errorMessage = "Passwords do not match");
+                            infoToast(context, _errorMessage,
+                                kBigButtonTextStyle);
                           }
                         }
                       },
@@ -179,28 +188,37 @@ class _EmailSignUpScreenState extends State<EmailSignUpScreen> {
     try {
       UserCredential fbCreatedUser = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-          email: _emailController.text, password: _passwordController.text);
-      var _jkUser = JKUser(
-          name: _nameController.text,
-          email: _emailController.text,
-          password: _passwordController.text,
-          phone: _phoneController.text,
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim());
+//During email sign up if the user clicks I'm Employer,
+//then the user type is set to employer and the user is created as an employer.
+      var _jkUser = widget.userType == UserType.employer
+      //creating employer user
+          ? JKUser(
+          empName: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
           userType: widget.userType.toString().substring(9),
-          organisationType: widget.userType == UserType.employer
-              ? _organisationController.text
-              : "No Org",
-          occupation: widget.userType == UserType.jobseeker
-              ? _occupationController.text
-              : "No Occupation",
+          uid: fbCreatedUser.user!.uid)
+          .toJson()
+      //creating jobseeker user. There is no sign up for admin user.
+      // To create admin user sign up as any user and then change
+      //the user type to admin in firebase console.
+          : JKUser(
+          jsName: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+          userType: widget.userType.toString().substring(9),
           uid: fbCreatedUser.user!.uid)
           .toJson();
+
       print(_jkUser);
       String? docId = await UserDBService.saveUserData(_jkUser);
       print(docId);
       return docId;
     } on FirebaseAuthException catch (error) {
       setState(() => _errorMessage = error.message!);
-      errorToast(context, _errorMessage, kBigButtonTextStyle);
+      infoToast(context, _errorMessage, kBigButtonTextStyle);
     }
   }
 }

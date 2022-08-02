@@ -1,8 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../constants/style.dart';
+import '../../../controllers/user_details_contorller.dart';
+import '../../../widgets/JobSeeker/delete_job_dialog.dart';
 import 'posted_job_edit_page.dart';
 
 class EmployerPostedJobDetailsPage extends StatelessWidget {
+  String jobName;
+  String orgType;
+  String location;
+  String salary;
+  String jobDescription;
+  String requirements;
+  String contactEmail;
+  String phone;
+  String orgAddress;
+  String jobId;
+
+  EmployerPostedJobDetailsPage({
+    required this.jobName,
+    required this.orgType,
+    required this.location,
+    required this.salary,
+    required this.jobDescription,
+    required this.requirements,
+    required this.contactEmail,
+    required this.phone,
+    required this.orgAddress,
+    required this.jobId,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,7 +42,7 @@ class EmployerPostedJobDetailsPage extends StatelessWidget {
             SizedBox(height: 12),
             Align(child: Text("JobKart", style: kSmallLogoTextStyle)),
             SizedBox(height: 12),
-            Text("Your Posted Jobs", style: kHeading2BoldStyle),
+            Text("Latest Jobs", style: kHeading2BoldStyle),
             SizedBox(height: 18),
             Container(
               padding: EdgeInsets.all(20),
@@ -23,6 +50,7 @@ class EmployerPostedJobDetailsPage extends StatelessWidget {
                   color: Color(0xFFE2E1E1),
                   borderRadius: BorderRadius.circular(23)),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Row(
@@ -31,28 +59,37 @@ class EmployerPostedJobDetailsPage extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Graphic Designer',
+                          Text(jobName,
                               style: kHeading2BoldStyle.copyWith(
                                   color: Color(0xFF112E6F))),
                           SizedBox(height: 5),
-                          Text('Real Estate Team', style: kHeading3DarkStyle),
+                          Text(orgType, style: kHeading3DarkStyle),
                           SizedBox(height: 5),
-                          Text('Montreal, Canada',
-                              style: kAppTextDarkBoldStyle),
+                          Text(location, style: kAppTextDarkBoldStyle),
                           Chip(
-                            label: Text('\$20-\$25 an hour',
+                            label: Text('\$$salary an hour',
                                 style: kAppTextBoldWhiteStyle),
                             backgroundColor: kThemeColor1,
                           ),
                         ],
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Image.asset('assets/images/jobPicIcon.png',
-                              height: 69, width: 63),
-                        ],
-                      ),
+                      Consumer<UserDetailsController>(
+                        builder: ((context, userDetails, child) {
+                          userDetails.getUserDetails();
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              userDetails.userImageUrl == null
+                                  ? Image.asset('assets/images/jobPicIcon.png',
+                                  height: 69, width: 63)
+                                  : Image.network(
+                                  userDetails.userImageUrl ?? kLogoImageUrl,
+                                  height: 69,
+                                  width: 63),
+                            ],
+                          );
+                        }),
+                      )
                     ],
                   ),
                   //Job Description
@@ -62,35 +99,30 @@ class EmployerPostedJobDetailsPage extends StatelessWidget {
                     children: [
                       Text("Job Description", style: kHeading3DarkBoldStyle),
                       SizedBox(height: 10),
-                      Text(
-                          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                          style: kAppRegularTextStyle),
+                      Text(jobDescription, style: kAppRegularTextStyle),
 
                       SizedBox(height: 10),
 
                       //Job Requirements
                       Text("Requirements", style: kHeading3DarkBoldStyle),
                       SizedBox(height: 10),
-                      Text(
-                          "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                          style: kAppRegularTextStyle),
+                      Text(requirements, style: kAppRegularTextStyle),
                       SizedBox(height: 10),
 
                       //Contact Information and Company Address
                       Text("Contact Information",
                           style: kHeading3DarkBoldStyle),
                       SizedBox(height: 10),
-                      Text("Email: Jobkart@test.com \nPhone: 1234567890",
+                      Text("Email: $contactEmail \nPhone: $phone",
                           style: kAppRegularTextStyle),
                       SizedBox(height: 10),
                       Text("Company Address", style: kHeading3DarkBoldStyle),
                       SizedBox(height: 10),
-                      Text("1234, Monk H1WE3R \nMontreal, Canada",
+                      Text("$orgAddress \n$location",
                           style: kAppRegularTextStyle),
                     ],
                   ),
-                  SizedBox(height: 10),
-
+                  SizedBox(height: 17),
                   //Edit and Delete Job Buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -100,8 +132,8 @@ class EmployerPostedJobDetailsPage extends StatelessWidget {
                             backgroundColor:
                             MaterialStateProperty.all(kDeleteRedColor)),
                         child: Text("Delete Job"),
-                        onPressed: () {
-                          //TODO:Implement Delete Job Functionality
+                        onPressed: () async {
+                          await deleteJobDialog(context: context, jobID: jobId);
                         },
                       ),
                       SizedBox(width: 17),
@@ -110,9 +142,21 @@ class EmployerPostedJobDetailsPage extends StatelessWidget {
                         child: Text("Edit Job"),
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PostedJobEditPage()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PostedJobEditPage(
+                                jobName: jobName,
+                                orgType: orgType,
+                                location: location,
+                                salary: salary,
+                                jobDescription: jobDescription,
+                                requirements: requirements,
+                                contactEmail: contactEmail,
+                                phone: phone,
+                                orgAddress: orgAddress,
+                              ),
+                            ),
+                          );
                         },
                       ),
                     ],
