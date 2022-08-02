@@ -25,7 +25,6 @@ class _EmployerPostedJobsPageState extends State<EmployerPostedJobsPage> {
     //get the email from shared prefs
     final userDataCache = await SharedPreferences.getInstance();
     empEmail = userDataCache.getString("loggedInUserEmail");
-
   }
 
   @override
@@ -65,7 +64,7 @@ class _EmployerPostedJobsPageState extends State<EmployerPostedJobsPage> {
                           jobsPostedByOrg: jobsPostedByOrg);
                     } else if (snapshot.connectionState ==
                         ConnectionState.waiting) {
-                      return const Center(child: Text('Loading...'));
+                      return const Center(child:CircularProgressIndicator());
                     } else {
                       print("snapshot doesn't have data");
                       return Center(
@@ -96,16 +95,7 @@ class EditableJobsPostedByOrgView extends StatelessWidget {
           return Column(
             children: [
               EditableJobListingWidget(
-                jobName: jobsPostedByOrg[index].jobName!,
-                orgType: jobsPostedByOrg[index].orgType!,
-                orgAddress: jobsPostedByOrg[index].jobAddress!,
-                salary: jobsPostedByOrg[index].salaryPerHr!,
-                jobID: jobsPostedByOrg[index].jobID!,
-                location: jobsPostedByOrg[index].jobLocation!,
-                contactEmail: jobsPostedByOrg[index].empEmail!,
-                phone: jobsPostedByOrg[index].empPhone!,
-                jobDescription: jobsPostedByOrg[index].jobDescription!,
-                requirements: jobsPostedByOrg[index].jobRequirements!,
+                jobProfile:jobsPostedByOrg[index] ,
               ),
               SizedBox(height: 15),
             ],

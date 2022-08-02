@@ -1,33 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:motion_toast/motion_toast.dart';
 import '../../../constants/style.dart';
 import '../../../controllers/login_signup_validators.dart';
 import '../../../models/job_profile.dart';
 import '../../../services/job_kart_db_service.dart';
+import '../../../widgets/motion_toasts.dart';
 
 class PostedJobEditPage extends StatefulWidget {
-  String? jobID;
-  String? jobName;
-  String? orgType;
-  String? orgAddress;
-  String? location;
-  String? contactEmail;
-  String? phone;
-  String? salary;
-  String? jobDescription;
-  String? requirements;
 
-  PostedJobEditPage(
-      {this.jobID,
-        this.jobName,
-        this.orgType,
-        this.orgAddress,
-        this.location,
-        this.contactEmail,
-        this.phone,
-        this.salary,
-        this.jobDescription,
-        this.requirements});
+
+  JobProfile jobProfile;
+  PostedJobEditPage({required this.jobProfile});
+
 
   @override
   State<PostedJobEditPage> createState() => _PostedJobEditPageState();
@@ -54,15 +37,15 @@ class _PostedJobEditPageState extends State<PostedJobEditPage> {
   }
 
   loadJobProfileDetails() {
-    _jobNameController.text = widget.jobName ?? "Job Name";
-    _orgTypeController.text = widget.orgType ?? "Organization Type";
-    _orgAddressController.text = widget.orgAddress ?? "Organization Address";
-    _locationController.text = widget.location ?? "Location";
-    _contactEmailController.text = widget.contactEmail ?? "Email";
-    _phoneController.text = widget.phone ?? "Phone";
-    _salaryController.text = widget.salary ?? "Salary";
-    _jobDescriptionController.text = widget.jobDescription ?? "Job Description";
-    _requirementsController.text = widget.requirements ?? "Requirements";
+    _jobNameController.text = widget.jobProfile.jobName ?? "Job Name";
+    _orgTypeController.text = widget.jobProfile.orgType ?? "Organization Type";
+    _orgAddressController.text = widget.jobProfile.jobAddress ?? "Organization Address";
+    _locationController.text = widget.jobProfile.jobLocation ?? "Location";
+    _contactEmailController.text = widget.jobProfile.empEmail ?? "Email";
+    _phoneController.text = widget.jobProfile.empPhone ?? "Phone";
+    _salaryController.text = widget.jobProfile.salaryPerHr ?? "Salary";
+    _jobDescriptionController.text = widget.jobProfile.jobDescription ?? "Job Description";
+    _requirementsController.text = widget.jobProfile.jobRequirements ?? "Requirements";
   }
 
   @override
@@ -112,6 +95,7 @@ class _PostedJobEditPageState extends State<PostedJobEditPage> {
                           labelText: "Location")),
                   SizedBox(height: 12),
                   TextFormField(
+                      enabled: false,
                       style: kHeading2RegularStyle,
                       controller: _contactEmailController,
                       validator: notNullValidator,
@@ -154,33 +138,32 @@ class _PostedJobEditPageState extends State<PostedJobEditPage> {
                     onPressed: () async {
                       //Update Job details in firestore
                       if (_editJobFormKey.currentState!.validate()) {
-                        var jobData = JobProfile(
-                            jobName: _jobNameController.text,
-                            jobAddress: _orgAddressController.text,
-                            jobLocation: _locationController.text,
-                            empEmail: _contactEmailController.text,
-                            empPhone: _phoneController.text,
-                            orgType: _orgTypeController.text,
-                            salaryPerHr: _salaryController.text,
-                            jobDescription: _jobDescriptionController.text,
-                            jobRequirements: _requirementsController.text)
-                            .toJson();
+                        var jobData = {
+                          'jobName': _jobNameController.text.trim(),
+                          'jobAddress': _orgAddressController.text.trim(),
+                          'jobLocation': _locationController.text.trim(),
+                          'empEmail': _contactEmailController.text.trim(),
+                          'empPhone': _phoneController.text.trim(),
+                          'orgType': _orgTypeController.text.trim(),
+                          'salaryPerHr': _salaryController.text.trim(),
+                          'jobDescription':
+                          _jobDescriptionController.text.trim(),
+                          'jobRequirements':
+                          _requirementsController.text.trim(),
+                        };
 
                         //Update job Data to the firestore database
                         await JobsDBService.updateJobData(
-                            jobData: jobData, docIdToUpdate: widget.jobID!);
+                            jobData: jobData, docIdToUpdate: widget.jobProfile.jobID!);
 
-                        //reset text fields and show a toast message
+                        //show a toast message
 
-                        MotionToast.success(
-                            description: Text(
-                              "Job Edited Successfully",
-                              style: kSmallButtonTextStyle.copyWith(
-                                  color: Colors.white, fontSize: 16),
-                            )).show(context);
+                        successToast(
+                            context, "Job Updated", kBigButtonTextStyle);
                       }
                     },
-                  )
+                  ),
+                  SizedBox(height: 20),
                 ],
               ),
             ),

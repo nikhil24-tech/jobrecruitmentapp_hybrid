@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../../constants/style.dart';
 import '../../services/job_kart_db_service.dart';
 
-
-deleteJobDialog({required BuildContext context, required String jobID}) async {
+deleteJobDialog(
+    {required BuildContext context,
+      required String jobID,
+      required bool popFromDetailsPage}) async {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -22,9 +24,17 @@ deleteJobDialog({required BuildContext context, required String jobID}) async {
                 child: Text("OK",
                     style: kHeading3RegularStyle.copyWith(color: Colors.white)),
                 onPressed: () async {
+                  // Delete job from database
                   await JobsDBService.deleteJobPosting(jobID: jobID);
-                 // await AppliedJobsDBService.deleteJobPosting(jobID: jobID);
-                  Navigator.of(context).pop();
+                  // Delete all applications for this job
+                  await AppliedJobsDBService.deleteAppliedJobByJobID(
+                      jobID: jobID);
+                  int _num_of_screen_to_pop = 0;
+                  popFromDetailsPage == true
+                      ? Navigator.popUntil(context, (route) {
+                    return _num_of_screen_to_pop++ == 2;
+                  })
+                      : Navigator.of(context).pop();
                 },
               ),
               SizedBox(width: 10),
