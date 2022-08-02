@@ -57,7 +57,7 @@ class _EmployerPostedJobsPageState extends State<EmployerPostedJobsPage> {
                       final jobsPostedByOrg = snapshot.data!.docs
                           .map((doc) => JobProfile.fromDocument(doc))
                           .where((empProfile) {
-                        return empProfile.orgContactEmail == empEmail;
+                        return empProfile.empEmail == empEmail;
                       }).toList();
 
                       //Build a list view of jobs posted by employer
@@ -98,14 +98,14 @@ class EditableJobsPostedByOrgView extends StatelessWidget {
               EditableJobListingWidget(
                 jobName: jobsPostedByOrg[index].jobName!,
                 orgType: jobsPostedByOrg[index].orgType!,
-                orgAddress: jobsPostedByOrg[index].orgAddress!,
-                salary: jobsPostedByOrg[index].salary!,
+                orgAddress: jobsPostedByOrg[index].jobAddress!,
+                salary: jobsPostedByOrg[index].salaryPerHr!,
                 jobID: jobsPostedByOrg[index].jobID!,
-                location: jobsPostedByOrg[index].location!,
-                contactEmail: jobsPostedByOrg[index].orgContactEmail!,
-                phone: jobsPostedByOrg[index].phone!,
+                location: jobsPostedByOrg[index].jobLocation!,
+                contactEmail: jobsPostedByOrg[index].empEmail!,
+                phone: jobsPostedByOrg[index].empPhone!,
                 jobDescription: jobsPostedByOrg[index].jobDescription!,
-                requirements: jobsPostedByOrg[index].requirements!,
+                requirements: jobsPostedByOrg[index].jobRequirements!,
               ),
               SizedBox(height: 15),
             ],

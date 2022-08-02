@@ -44,10 +44,10 @@ class SavedJobWidget extends StatelessWidget {
                 style: kHeading3DarkStyle,
               ),
               SizedBox(height: 5),
-              Text(savedJob.location ?? "location",
+              Text(savedJob.jobLocation ?? "location",
                   style: kAppTextDarkBoldStyle),
               Chip(
-                label: Text('\$ ${savedJob.salary} an hour',
+                label: Text('\$ ${savedJob.salaryPerHr} an hour',
                     style: kAppTextBoldWhiteStyle),
                 backgroundColor: kThemeColor1,
               ),

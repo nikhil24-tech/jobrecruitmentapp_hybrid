@@ -23,7 +23,7 @@ deleteJobDialog({required BuildContext context, required String jobID}) async {
                     style: kHeading3RegularStyle.copyWith(color: Colors.white)),
                 onPressed: () async {
                   await JobsDBService.deleteJobPosting(jobID: jobID);
-                  await AppliedJobsDBService.deleteJobPosting(jobID: jobID);
+                 // await AppliedJobsDBService.deleteJobPosting(jobID: jobID);
                   Navigator.of(context).pop();
                 },
               ),

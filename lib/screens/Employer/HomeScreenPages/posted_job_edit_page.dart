@@ -156,14 +156,14 @@ class _PostedJobEditPageState extends State<PostedJobEditPage> {
                       if (_editJobFormKey.currentState!.validate()) {
                         var jobData = JobProfile(
                             jobName: _jobNameController.text,
-                            orgAddress: _orgAddressController.text,
-                            location: _locationController.text,
-                            orgContactEmail: _contactEmailController.text,
-                            phone: _phoneController.text,
+                            jobAddress: _orgAddressController.text,
+                            jobLocation: _locationController.text,
+                            empEmail: _contactEmailController.text,
+                            empPhone: _phoneController.text,
                             orgType: _orgTypeController.text,
-                            salary: _salaryController.text,
+                            salaryPerHr: _salaryController.text,
                             jobDescription: _jobDescriptionController.text,
-                            requirements: _requirementsController.text)
+                            jobRequirements: _requirementsController.text)
                             .toJson();
 
                         //Update job Data to the firestore database

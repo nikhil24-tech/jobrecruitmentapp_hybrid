@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../constants/style.dart';
 import '../../user_type_select.dart';
@@ -20,13 +21,14 @@ class AdminSettingsPage extends StatelessWidget {
                   backgroundColor: MaterialStateProperty.all(kDeleteRedColor),
                 ),
                 child: Text("Sign Out"),
-                onPressed: () {
-                  //TODO: Implement Signout Logic
-
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => UserTypeSelectScreen()));
+                onPressed: () async{
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserTypeSelectScreen(),
+                    ),
+                  );
                 },
               ),
             ],

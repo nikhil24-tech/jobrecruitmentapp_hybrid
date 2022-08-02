@@ -116,17 +116,17 @@ class _AddANewJobPageState extends State<AddANewJobPage> {
                       if (_addJobFormKey.currentState!.validate()) {
                         var jobData = JobProfile(
                             jobName: _jobNameController.text.trim(),
-                            orgAddress: _orgAddressController.text.trim(),
-                            location: _locationController.text.trim(),
-                            orgContactEmail: widget.userEmail,
-                            phone: _phoneController.text.trim(),
+                            jobAddress: _orgAddressController.text.trim(),
+                            jobLocation: _locationController.text.trim(),
+                            empEmail: widget.userEmail,
+                            empPhone: _phoneController.text.trim(),
                             orgType: _orgTypeController.text.trim(),
-                            salary: _salaryController.text.trim(),
+                            salaryPerHr: _salaryController.text.trim(),
                             jobDescription:
                             _jobDescriptionController.text.trim(),
-                            requirements:
+                            jobRequirements:
                             _requirementsController.text.trim(),
-                            employerImageUrl: widget.empLogoImageUrl)
+                            orgImageUrl: widget.empLogoImageUrl)
                             .toJson();
 
                         //saving job Data to the firestore database
