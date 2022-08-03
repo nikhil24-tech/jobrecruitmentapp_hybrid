@@ -2,33 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../constants/style.dart';
 import '../../../controllers/user_details_contorller.dart';
+import '../../../models/job_profile.dart';
 import '../../../widgets/JobSeeker/delete_job_dialog.dart';
+import 'employer_posted_jobs_page.dart';
 import 'posted_job_edit_page.dart';
 
 class EmployerPostedJobDetailsPage extends StatelessWidget {
-  String jobName;
-  String orgType;
-  String location;
-  String salary;
-  String jobDescription;
-  String requirements;
-  String contactEmail;
-  String phone;
-  String orgAddress;
-  String jobId;
-
-  EmployerPostedJobDetailsPage({
-    required this.jobName,
-    required this.orgType,
-    required this.location,
-    required this.salary,
-    required this.jobDescription,
-    required this.requirements,
-    required this.contactEmail,
-    required this.phone,
-    required this.orgAddress,
-    required this.jobId,
-  });
+  JobProfile jobProfile;
+  EmployerPostedJobDetailsPage({required this.jobProfile});
 
   @override
   Widget build(BuildContext context) {
@@ -59,15 +40,16 @@ class EmployerPostedJobDetailsPage extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(jobName,
+                          Text(jobProfile.jobName!,
                               style: kHeading2BoldStyle.copyWith(
                                   color: Color(0xFF112E6F))),
                           SizedBox(height: 5),
-                          Text(orgType, style: kHeading3DarkStyle),
+                          Text(jobProfile.orgType!, style: kHeading3DarkStyle),
                           SizedBox(height: 5),
-                          Text(location, style: kAppTextDarkBoldStyle),
+                          Text(jobProfile.jobLocation!,
+                              style: kAppTextDarkBoldStyle),
                           Chip(
-                            label: Text('\$$salary an hour',
+                            label: Text('\$${jobProfile.salaryPerHr} an hour',
                                 style: kAppTextBoldWhiteStyle),
                             backgroundColor: kThemeColor1,
                           ),
@@ -99,26 +81,30 @@ class EmployerPostedJobDetailsPage extends StatelessWidget {
                     children: [
                       Text("Job Description", style: kHeading3DarkBoldStyle),
                       SizedBox(height: 10),
-                      Text(jobDescription, style: kAppRegularTextStyle),
+                      Text(jobProfile.jobDescription!,
+                          style: kAppRegularTextStyle),
 
                       SizedBox(height: 10),
 
                       //Job Requirements
                       Text("Requirements", style: kHeading3DarkBoldStyle),
                       SizedBox(height: 10),
-                      Text(requirements, style: kAppRegularTextStyle),
+                      Text(jobProfile.jobRequirements!,
+                          style: kAppRegularTextStyle),
                       SizedBox(height: 10),
 
                       //Contact Information and Company Address
                       Text("Contact Information",
                           style: kHeading3DarkBoldStyle),
                       SizedBox(height: 10),
-                      Text("Email: $contactEmail \nPhone: $phone",
+                      Text(
+                          "Email: ${jobProfile.empEmail} \nPhone: ${jobProfile.empPhone}",
                           style: kAppRegularTextStyle),
                       SizedBox(height: 10),
                       Text("Company Address", style: kHeading3DarkBoldStyle),
                       SizedBox(height: 10),
-                      Text("$orgAddress \n$location",
+                      Text(
+                          "${jobProfile.jobAddress} \n${jobProfile.jobLocation}",
                           style: kAppRegularTextStyle),
                     ],
                   ),
@@ -133,7 +119,10 @@ class EmployerPostedJobDetailsPage extends StatelessWidget {
                             MaterialStateProperty.all(kDeleteRedColor)),
                         child: Text("Delete Job"),
                         onPressed: () async {
-                          await deleteJobDialog(context: context, jobID: jobId);
+                          await deleteJobDialog(
+                              context: context,
+                              jobID: jobProfile.jobID!,
+                              popFromDetailsPage: true);
                         },
                       ),
                       SizedBox(width: 17),
@@ -145,15 +134,7 @@ class EmployerPostedJobDetailsPage extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => PostedJobEditPage(
-                                jobName: jobName,
-                                orgType: orgType,
-                                location: location,
-                                salary: salary,
-                                jobDescription: jobDescription,
-                                requirements: requirements,
-                                contactEmail: contactEmail,
-                                phone: phone,
-                                orgAddress: orgAddress,
+                                jobProfile: jobProfile,
                               ),
                             ),
                           );

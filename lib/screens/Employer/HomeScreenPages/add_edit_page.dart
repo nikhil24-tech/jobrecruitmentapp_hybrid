@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../constants/style.dart';
+import '../../../models/jk_user.dart';
+import '../../../services/job_kart_db_service.dart';
 import 'add_new_job_page.dart';
-import 'employer_posted_job_details.dart';
 import 'employer_posted_jobs_page.dart';
 
-
+//PageController _pageViewController = PageController(initialPage: 0);
 
 class AddEditJobsPage extends StatefulWidget {
   @override
@@ -14,20 +15,19 @@ class AddEditJobsPage extends StatefulWidget {
 
 String empLogoImageUrl = "";
 String? userEmail;
+JKUser? empProfile;
 
 class _AddEditJobsPageState extends State<AddEditJobsPage> {
   @override
   void initState() {
-    getEmpDetails();
+    getEmpProfile();
     super.initState();
   }
 
-  getEmpDetails() async {
+  getEmpProfile() async {
     final userDataCache = await SharedPreferences.getInstance();
-
     userEmail = await userDataCache.getString("loggedInUserEmail")!;
-    empLogoImageUrl =
-        await userDataCache.getString('loggedInUserImageUrl') ?? kLogoImageUrl;
+    empProfile = await UserDBService.getJobSeekerProfile(email: userEmail!);
   }
 
   @override
@@ -42,8 +42,7 @@ class _AddEditJobsPageState extends State<AddEditJobsPage> {
           onPressed: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AddANewJobPage(
-                  empLogoImageUrl: empLogoImageUrl, userEmail: userEmail),
+              builder: (context) => AddANewJobPage(empProfile: empProfile!),
             ),
           ),
         ),
@@ -63,5 +62,3 @@ class _AddEditJobsPageState extends State<AddEditJobsPage> {
     );
   }
 }
-
-

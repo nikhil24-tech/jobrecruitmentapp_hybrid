@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../../constants/style.dart';
+import '../../models/job_profile.dart';
 import '../../screens/Employer/HomeScreenPages/employer_posted_job_details.dart';
 import '../../screens/Employer/HomeScreenPages/posted_job_edit_page.dart';
 import 'delete_job_dialog.dart';
@@ -10,29 +10,8 @@ class EditableJobListingWidget extends StatelessWidget {
   //containing three text widgets and a chip .The second column
   //containing an icon and a button
 
-  String jobName;
-  String orgType;
-  String orgAddress;
-  String salary;
-  String jobID;
-  String location;
-  String contactEmail;
-  String phone;
-  String jobDescription;
-  String requirements;
-
-  EditableJobListingWidget({
-    required this.jobName,
-    required this.orgType,
-    required this.orgAddress,
-    required this.salary,
-    required this.jobID,
-    required this.location,
-    required this.contactEmail,
-    required this.phone,
-    required this.jobDescription,
-    required this.requirements,
-  });
+  JobProfile jobProfile;
+  EditableJobListingWidget({required this.jobProfile});
 
   @override
   Widget build(BuildContext context) {
@@ -41,17 +20,8 @@ class EditableJobListingWidget extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => EmployerPostedJobDetailsPage(
-                jobId: jobID,
-                jobName: jobName,
-                orgType: orgType,
-                location: location,
-                salary: salary,
-                jobDescription: jobDescription,
-                requirements: requirements,
-                contactEmail: contactEmail,
-                phone: phone,
-                orgAddress: orgAddress),
+            builder: (context) =>
+                EmployerPostedJobDetailsPage(jobProfile: jobProfile),
           ),
         );
       },
@@ -68,20 +38,20 @@ class EditableJobListingWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                    jobName.length > 18
-                        ? (jobName.substring(0, 15)) + '...'
-                        : jobName,
+                    jobProfile.jobName!.length > 18
+                        ? (jobProfile.jobName!.substring(0, 15)) + '...'
+                        : jobProfile.jobName!,
                     style:
                     kHeading2BoldStyle.copyWith(color: Color(0xFF112E6F))),
                 SizedBox(height: 5),
                 Text(
-                  orgType,
+                  jobProfile.orgType!,
                   style: kHeading3DarkStyle,
                 ),
                 SizedBox(height: 5),
-                Text(orgAddress, style: kAppTextDarkBoldStyle),
+                Text(jobProfile.jobAddress!, style: kAppTextDarkBoldStyle),
                 Chip(
-                  label: Text('\$' + salary + ' per hour',
+                  label: Text('\$' + jobProfile.salaryPerHr! + ' per hour',
                       style: kAppTextBoldWhiteStyle),
                   backgroundColor: kThemeColor1,
                 ),
@@ -98,16 +68,7 @@ class EditableJobListingWidget extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: ((context) => PostedJobEditPage(
-                          jobID: jobID,
-                          jobName: jobName,
-                          orgType: orgType,
-                          orgAddress: orgAddress,
-                          location: location,
-                          contactEmail: contactEmail,
-                          phone: phone,
-                          salary: salary,
-                          jobDescription: jobDescription,
-                          requirements: requirements,
+                          jobProfile: jobProfile,
                         )),
                       ),
                     );
@@ -121,7 +82,10 @@ class EditableJobListingWidget extends StatelessWidget {
                   child: Text("Delete Job"),
                   onPressed: () async {
                     //alert dialog to confirm deletion of job
-                    await deleteJobDialog(context: context, jobID: jobID);
+                    await deleteJobDialog(
+                        context: context,
+                        jobID: jobProfile.jobID!,
+                        popFromDetailsPage: false);
                   },
                 ),
               ],

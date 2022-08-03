@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:motion_toast/motion_toast.dart';
 import '../../../constants/style.dart';
 import '../../../controllers/login_signup_validators.dart';
+import '../../../models/jk_user.dart';
 import '../../../models/job_profile.dart';
 import '../../../services/job_kart_db_service.dart';
+import '../../../widgets/motion_toasts.dart';
 
 class AddANewJobPage extends StatefulWidget {
-  final String empLogoImageUrl;
-  String? userEmail;
+  final JKUser empProfile;
 
-  AddANewJobPage({required this.empLogoImageUrl, String? this.userEmail});
+  AddANewJobPage({required this.empProfile});
 
   @override
   State<AddANewJobPage> createState() => _AddANewJobPageState();
@@ -66,12 +66,6 @@ class _AddANewJobPageState extends State<AddANewJobPage> {
                       decoration: kTextFieldInputDecoration.copyWith(
                           labelText: "Location")),
                   SizedBox(height: 12),
-                  TextField(
-                      enabled: false,
-                      style: kHeading2RegularStyle,
-                      decoration: kTextFieldInputDecoration.copyWith(
-                          labelText: widget.userEmail)),
-                  SizedBox(height: 12),
                   TextFormField(
                       style: kHeading2RegularStyle,
                       controller: _phoneController,
@@ -91,7 +85,7 @@ class _AddANewJobPageState extends State<AddANewJobPage> {
                       controller: _salaryController,
                       validator: notNullValidator,
                       decoration: kTextFieldInputDecoration.copyWith(
-                          labelText: "Salary")),
+                          labelText: "Salary per hour")),
                   SizedBox(height: 12),
                   TextFormField(
                       style: kHeading2RegularStyle,
@@ -118,15 +112,16 @@ class _AddANewJobPageState extends State<AddANewJobPage> {
                             jobName: _jobNameController.text.trim(),
                             jobAddress: _orgAddressController.text.trim(),
                             jobLocation: _locationController.text.trim(),
-                            empEmail: widget.userEmail,
+                            empEmail: widget.empProfile.email,
                             empPhone: _phoneController.text.trim(),
                             orgType: _orgTypeController.text.trim(),
+                            orgName: widget.empProfile.orgName,
                             salaryPerHr: _salaryController.text.trim(),
                             jobDescription:
                             _jobDescriptionController.text.trim(),
                             jobRequirements:
                             _requirementsController.text.trim(),
-                            orgImageUrl: widget.empLogoImageUrl)
+                            orgImageUrl: widget.empProfile.orgImageUrl)
                             .toJson();
 
                         //saving job Data to the firestore database
@@ -134,15 +129,12 @@ class _AddANewJobPageState extends State<AddANewJobPage> {
 
                         //reset text fields and show a toast message
                         clearControllers();
-                        MotionToast.success(
-                            description: Text(
-                              "Job Added Successfully",
-                              style: kSmallButtonTextStyle.copyWith(
-                                  color: Colors.white, fontSize: 16),
-                            )).show(context);
+                        successToast(
+                            context, "New Job Added", kBigButtonTextStyle);
                       }
                     },
-                  )
+                  ),
+                  SizedBox(height: 40),
                 ],
               ),
             ),
