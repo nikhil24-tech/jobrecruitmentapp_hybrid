@@ -19,7 +19,7 @@ Future<void> navigateToHomeScreen(
             ? EmployerHomeScreen()
             : userType == "jobseeker"
                 ? JobSeekerHomeScreen()
-            : JobSeekerHomeScreen();
+            : AdminHomeScreen();
       },
     ));
   }
