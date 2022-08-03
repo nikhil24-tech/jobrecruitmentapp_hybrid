@@ -15,6 +15,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   int currentIndexOfBNB = 0; //BNB is Bottom Navigation Bar
   final List<Widget> _pages = [
     AdminHomePage(),
+    AdminHomePage(),
+    AdminHomePage(),
     AdminSettingsPage()
   ];
 
