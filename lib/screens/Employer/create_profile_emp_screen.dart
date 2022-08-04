@@ -116,7 +116,7 @@ class _EmployerCreateProfileScreenState
                           //Pick Image from gallery
                           await pickImage();
                         },
-                        // child: imageSet(imageFile: profileImage),
+                        child: imageSet(imageFile: profileImage),
                       ),
                       SizedBox(width: 10),
                       Text(
