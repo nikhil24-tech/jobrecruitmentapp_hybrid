@@ -14,6 +14,9 @@ Color kContainerBackgroundColor = const Color.fromRGBO(226, 225, 225, 0.46);
 const String kLogoImageUrl =
     "https://firebasestorage.googleapis.com/v0/b/jobkart-46567.appspot.com/o/userProfileImages%2FJobKartLogo.png?alt=media&token=8164c65f-210b-410a-a6cc-1cd4b52770bd";
 
+const String kLoadingAnimationGif =
+    "https://dltqhkoxgn1gx.cloudfront.net/img/posts/6-vue-loader-animation-libraries-to-reduce-your-bounce-rate-2.png";
+
 TextStyle kBigLogoTextStyle = TextStyle(
     color: kThemeColor1,
     fontSize: 80,
@@ -148,3 +151,24 @@ InputDecoration kTextFieldInputDecorationMultiLine = InputDecoration(
     borderSide: BorderSide.none,
   ),
 );
+
+imageSet({Image? imageFile}) {
+  return ClipOval(
+    child: imageFile == null
+        ? SizedBox(
+        height: 100,
+        width: 100,
+        child: CircleAvatar(backgroundColor: Color(0xFFD9D9D9)))
+        : SizedBox(
+      height: 100,
+      width: 100,
+      // Some images are not cicrular, so we need to make them round.
+      child: CircleAvatar(
+        child: FadeInImage(
+          placeholder: Image.network(kLoadingAnimationGif).image,
+          image: imageFile.image,
+        ),
+      ),
+    ),
+  );
+}
