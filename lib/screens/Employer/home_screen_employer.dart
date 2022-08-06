@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jobrecruitmentapp_hybrid/screens/Employer/HomeScreenPages/search_page.dart';
 import '../../constants/style.dart';
 import '../../widgets/exit_confirmation_dialog.dart';
 import '../../widgets/underlined_icon_widget.dart';
@@ -16,7 +17,7 @@ class _EmployerHomeScreenState extends State<EmployerHomeScreen> {
   int currentIndexOfBNB = 0; //BNB is Bottom Navigation Bar
   final List<Widget> _pages = [
     Center(child: jobsPage()),
-    Center(child: jobsPage()),
+    Center(child: SearchPage()),
     Center(child: AddEditJobsPage()),
     Center(child: jobsPage()),
     Center(child: jobsPage()),

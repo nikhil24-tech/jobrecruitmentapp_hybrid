@@ -16,6 +16,7 @@ class _JobSeekerSearchPageState extends State<JobSeekerSearchPage> {
   final _searchController = TextEditingController();
 
   @override
+  var dropdownValue = 'salary ascending';
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 22),
@@ -40,9 +41,9 @@ class _JobSeekerSearchPageState extends State<JobSeekerSearchPage> {
               IconButton(
                 icon: Icon(Icons.search, size: 30),
                 onPressed: () async {
-                  //TODO: search for jobs
                   jobProfileSearchResults = await JobsDBService.searchJobs(
                       _searchController.text.trim());
+
                   setState(() {});
                 },
               ),
@@ -68,22 +69,53 @@ class _JobSeekerSearchPageState extends State<JobSeekerSearchPage> {
                   iconDisabledColor: Colors.white,
                   dropdownColor: kThemeColor1,
                   underline: Container(),
-                  value: "Categories",
+                  value: dropdownValue,
                   items: [
                     DropdownMenuItem(
-                      child: Text("Categories"),
-                      value: "Categories",
+                      child: SalaryUpLabel(),
+                      value: "salary ascending",
                     ),
                     DropdownMenuItem(
-                      child: Text("Relevance"),
-                      value: "Relevance",
+                      child: SalaryDownLabel(),
+                      value: "salary descending",
                     ),
                     DropdownMenuItem(
-                      child: Text("Distance"),
-                      value: "Distance",
+                      child: JobNameUpLabel(),
+                      value: "name ascending",
+                    ),
+                    DropdownMenuItem(
+                      child: JobNameDownLabel(),
+                      value: "name descending",
                     ),
                   ],
-                  onChanged: (value) {},
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      dropdownValue = newValue!;
+                    });
+                    if (jobProfileSearchResults != null) {
+                      switch (dropdownValue) {
+                        case "salary ascending":
+                          jobProfileSearchResults!.sort((a, b) =>
+                              a.salaryPerHr!.compareTo(b.salaryPerHr!));
+                          break;
+
+                        case "salary descending":
+                          jobProfileSearchResults!.sort((a, b) =>
+                              b.salaryPerHr!.compareTo(a.salaryPerHr!));
+                          break;
+
+                        case "name ascending":
+                          jobProfileSearchResults!
+                              .sort((a, b) => a.jobName!.compareTo(b.jobName!));
+                          break;
+                        case "name descending":
+                          jobProfileSearchResults!
+                              .sort((a, b) => b.jobName!.compareTo(a.jobName!));
+                          break;
+                      }
+                      setState(() {});
+                    }
+                  },
                 ),
               ),
             ],
@@ -92,12 +124,18 @@ class _JobSeekerSearchPageState extends State<JobSeekerSearchPage> {
 
           //Search Results List view
 
-          if (jobProfileSearchResults == null) Text("") else Flexible(
+          jobProfileSearchResults == null
+              ? Text("")
+              : Flexible(
             child: ListView.builder(
               itemCount: jobProfileSearchResults!.length,
               itemBuilder: ((context, index) {
                 return Column(
                   children: [
+                    JobListingWidget(
+                      isAdmin: true,
+                      jobProfile: jobProfileSearchResults![index],
+                    ),
                     SizedBox(height: 15),
                   ],
                 );
@@ -106,6 +144,54 @@ class _JobSeekerSearchPageState extends State<JobSeekerSearchPage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class SalaryDownLabel extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text("Salary", style: TextStyle(fontSize: 16)),
+        Icon(Icons.arrow_downward, color: Colors.white)
+      ],
+    );
+  }
+}
+
+class SalaryUpLabel extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text("Salary", style: TextStyle(fontSize: 16)),
+        Icon(Icons.arrow_upward, color: Colors.white)
+      ],
+    );
+  }
+}
+
+class JobNameUpLabel extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text("Name", style: TextStyle(fontSize: 16)),
+        Icon(Icons.arrow_upward, color: Colors.white)
+      ],
+    );
+  }
+}
+
+class JobNameDownLabel extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text("Name", style: TextStyle(fontSize: 16)),
+        Icon(Icons.arrow_downward, color: Colors.white)
+      ],
     );
   }
 }
