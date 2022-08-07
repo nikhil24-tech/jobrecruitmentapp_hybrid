@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jobrecruitmentapp_hybrid/screens/Admin/HomeScreenPagesAdmin/admin_search_page.dart';
+import 'package:jobrecruitmentapp_hybrid/screens/Admin/HomeScreenPagesAdmin/user_profiles_admin_page.dart';
 import '../../constants/style.dart';
 import '../../widgets/exit_confirmation_dialog.dart';
 import '../../widgets/underlined_icon_widget.dart';
@@ -17,7 +18,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   final List<Widget> _pages = [
     AdminHomePage(),
     AdminSearchPage(),
-    AdminHomePage(),
+    UserProileAdminPage(),
     AdminSettingsPage()
   ];
 
