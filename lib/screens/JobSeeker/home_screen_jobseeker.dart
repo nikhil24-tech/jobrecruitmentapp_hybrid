@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../constants/style.dart';
+
 import '../../widgets/exit_confirmation_dialog.dart';
+
 import '../../widgets/underlined_icon_widget.dart';
+import 'HomeScreenPagesJs/applied_jobs_page.dart';
 import 'HomeScreenPagesJs/js_home_page.dart';
 import 'HomeScreenPagesJs/js_search_page.dart';
+import 'HomeScreenPagesJs/js_signout.dart';
 import 'HomeScreenPagesJs/saved_jobs_page.dart';
 
 class JobSeekerHomeScreen extends StatefulWidget {
@@ -16,9 +20,9 @@ class _JobSeekerHomeScreenState extends State<JobSeekerHomeScreen> {
   final List<Widget> _pages = [
     JobSeekerHomePage(),
     JobSeekerSearchPage(),
-    JobSeekerHomeScreen(),
+    AppliedJobsPage(),
     SavedJobsPage(),
-    JobSeekerHomeScreen(),
+    JSSignout(),
   ];
 
   @override
