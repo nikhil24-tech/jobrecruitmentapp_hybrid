@@ -8,7 +8,7 @@ import '../user_type_select.dart';
 import 'HomeScreenPages/add_edit_page.dart';
 import 'HomeScreenPages/employer_candidate_page.dart';
 import 'HomeScreenPages/jobs_page.dart';
-import 'HomeScreenPages/signout.dart';
+import 'HomeScreenPages/settings_page.dart';
 
 
 class EmployerHomeScreen extends StatefulWidget {
@@ -23,7 +23,7 @@ class _EmployerHomeScreenState extends State<EmployerHomeScreen> {
     Center(child: SearchPage()),
     Center(child: AddEditJobsPage()),
     Center(child: jobsPage()),
-    Center(child: Signout()),
+    Center(child: SettingsPage()),
   ];
 
   @override
