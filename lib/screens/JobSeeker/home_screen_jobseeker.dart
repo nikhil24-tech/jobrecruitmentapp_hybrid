@@ -7,7 +7,8 @@ import '../../widgets/underlined_icon_widget.dart';
 import 'HomeScreenPagesJs/applied_jobs_page.dart';
 import 'HomeScreenPagesJs/js_home_page.dart';
 import 'HomeScreenPagesJs/js_search_page.dart';
-import 'HomeScreenPagesJs/js_signout.dart';
+
+import 'HomeScreenPagesJs/js_settings_page.dart';
 import 'HomeScreenPagesJs/saved_jobs_page.dart';
 
 class JobSeekerHomeScreen extends StatefulWidget {
