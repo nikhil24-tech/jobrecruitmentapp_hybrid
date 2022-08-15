@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../constants/style.dart';
-import '../../models/job_profile.dart';
-import '../../screens/Employer/HomeScreenPages/employer_posted_job_details.dart';
-import '../../screens/Employer/HomeScreenPages/posted_job_edit_page.dart';
+import '../constants/style.dart';
+import '../models/job_profile.dart';
+import '../screens/Employer/HomeScreenPages/employer_posted_job_details.dart';
+import '../screens/Employer/HomeScreenPages/posted_job_edit_page.dart';
 import 'delete_job_dialog.dart';
 
 class EditableJobListingWidget extends StatelessWidget {

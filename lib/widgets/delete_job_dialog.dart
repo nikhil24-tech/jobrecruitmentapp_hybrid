@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../constants/style.dart';
-import '../../services/job_kart_db_service.dart';
+import '../constants/style.dart';
+import '../services/job_kart_db_service.dart';
 
 deleteJobDialog(
     {required BuildContext context,
