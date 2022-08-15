@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:job_kart_app/screens/Employer/HomeScreenPages/employer_candidate_page.dart';
-import 'package:job_kart_app/services/job_kart_db_service.dart';
 import 'package:motion_toast/motion_toast.dart';
 import '../../../constants/style.dart';
-import '../../../model/applied_jobs.dart';
-import '../../../widgets/multiline_text_widget.dart';
+import '../../../models/applied_jobs.dart';
+import '../../../services/job_kart_db_service.dart';
 
 class EmployerCandidateDetailsPage extends StatefulWidget {
   final AppliedJob appliedJob;

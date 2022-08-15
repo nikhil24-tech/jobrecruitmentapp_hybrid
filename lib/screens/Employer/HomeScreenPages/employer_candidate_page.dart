@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../constants/style.dart';
-import '../../../model/applied_jobs.dart';
+import '../../../models/applied_jobs.dart';
 import '../../../widgets/candidate_summary_widget.dart';
 
 class JobSeekersAppliedPage extends StatefulWidget {

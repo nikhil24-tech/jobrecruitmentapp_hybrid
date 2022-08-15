@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../constants/style.dart';
 import '../models/applied_jobs.dart';
-
-
-
+import '../screens/Employer/HomeScreenPages/employer_candidate_details_page.dart';
 
 class CandidateSummaryWidget extends StatefulWidget {
   final AppliedJob appliedJob;
@@ -34,8 +32,8 @@ class _CandidateSummaryWidgetState extends State<CandidateSummaryWidget> {
                 child: widget.appliedJob.jsImageUrl == null
                     ? CircleAvatar(backgroundColor: Color(0xFFD9D9D9))
                     : CircleAvatar(
-                        backgroundImage:
-                            Image.network(widget.appliedJob.jsImageUrl!).image),
+                    backgroundImage:
+                    Image.network(widget.appliedJob.jsImageUrl!).image),
               ),
               SizedBox(width: 11),
               Column(
@@ -64,19 +62,25 @@ class _CandidateSummaryWidgetState extends State<CandidateSummaryWidget> {
                   padding: const EdgeInsets.all(8.0),
                   child: widget.appliedJob.isApproved != null
                       ? widget.appliedJob.isApproved == true
-                          ? Text("Approved ✔",
-                              style: kHeading2BoldStyle.copyWith(
-                                  color: Colors.green))
-                          : Text("Rejected ❌ ",
-                              style: kHeading2BoldStyle.copyWith(
-                                  color: Colors.red))
+                      ? Text("Approved ✔",
+                      style: kHeading2BoldStyle.copyWith(
+                          color: Colors.green))
+                      : Text("Rejected ❌ ",
+                      style: kHeading2BoldStyle.copyWith(
+                          color: Colors.red))
                       : Text(""),
                 ),
                 Spacer(),
                 ElevatedButton(
                   style: kSmallButtonStyle,
                   child: Text("View Candidate"),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EmployerCandidateDetailsPage(
+                                appliedJob: widget.appliedJob)));
+                  },
                 ),
               ],
             ),
