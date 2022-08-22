@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import '../../../constants/style.dart';
 import '../../../controllers/login_signup_validators.dart';
-import '../../../models/jk_user.dart';
 import '../../../models/job_profile.dart';
 import '../../../services/job_kart_db_service.dart';
 import '../../../widgets/motion_toasts.dart';
 
-class AddANewJobPage extends StatefulWidget {
-  final JKUser empProfile;
+class PostedJobEditPage extends StatefulWidget {
 
-  AddANewJobPage({required this.empProfile});
+
+  JobProfile jobProfile;
+  PostedJobEditPage({required this.jobProfile});
+
 
   @override
-  State<AddANewJobPage> createState() => _AddANewJobPageState();
+  State<PostedJobEditPage> createState() => _PostedJobEditPageState();
 }
 
-class _AddANewJobPageState extends State<AddANewJobPage> {
+class _PostedJobEditPageState extends State<PostedJobEditPage> {
   //Textediting controllers for form fields
   TextEditingController _jobNameController = TextEditingController();
   TextEditingController _orgAddressController = TextEditingController();
@@ -27,7 +28,25 @@ class _AddANewJobPageState extends State<AddANewJobPage> {
   TextEditingController _jobDescriptionController = TextEditingController();
   TextEditingController _requirementsController = TextEditingController();
 //Form key for form validation
-  final _addJobFormKey = GlobalKey<FormState>();
+  final _editJobFormKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    super.initState();
+    // call load function to get the job profile details from firestore
+    loadJobProfileDetails();
+  }
+
+  loadJobProfileDetails() {
+    _jobNameController.text = widget.jobProfile.jobName ?? "Job Name";
+    _orgTypeController.text = widget.jobProfile.orgType ?? "Organization Type";
+    _orgAddressController.text = widget.jobProfile.jobAddress ?? "Organization Address";
+    _locationController.text = widget.jobProfile.jobLocation ?? "Location";
+    _contactEmailController.text = widget.jobProfile.empEmail ?? "Email";
+    _phoneController.text = widget.jobProfile.empPhone ?? "Phone";
+    _salaryController.text = widget.jobProfile.salaryPerHr ?? "Salary";
+    _jobDescriptionController.text = widget.jobProfile.jobDescription ?? "Job Description";
+    _requirementsController.text = widget.jobProfile.jobRequirements ?? "Requirements";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,20 +56,29 @@ class _AddANewJobPageState extends State<AddANewJobPage> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 23),
             child: Form(
-              key: _addJobFormKey,
+              key: _editJobFormKey,
               child: Column(
                 children: [
                   SizedBox(height: 12),
                   Text("JobKart", style: kSmallLogoTextStyle),
                   SizedBox(height: 33),
-                  Text("Add a New Job", style: kGreyoutHeading3Style),
-                  SizedBox(height: 50),
+                  Align(
+                      alignment: Alignment.topLeft,
+                      child: Text("Edit Job", style: kGreyoutHeading3Style)),
+                  SizedBox(height: 30),
                   TextFormField(
                       style: kHeading2RegularStyle,
                       controller: _jobNameController,
                       validator: notNullValidator,
                       decoration: kTextFieldInputDecoration.copyWith(
                           labelText: "Job Name")),
+                  SizedBox(height: 12),
+                  TextFormField(
+                      style: kHeading2RegularStyle,
+                      controller: _orgTypeController,
+                      validator: notNullValidator,
+                      decoration: kTextFieldInputDecoration.copyWith(
+                          labelText: "Organisation Type")),
                   SizedBox(height: 12),
                   TextFormField(
                       style: kHeading2RegularStyle,
@@ -67,6 +95,14 @@ class _AddANewJobPageState extends State<AddANewJobPage> {
                           labelText: "Location")),
                   SizedBox(height: 12),
                   TextFormField(
+                      enabled: false,
+                      style: kHeading2RegularStyle,
+                      controller: _contactEmailController,
+                      validator: notNullValidator,
+                      decoration: kTextFieldInputDecoration.copyWith(
+                          labelText: "Contact Email")),
+                  SizedBox(height: 12),
+                  TextFormField(
                       style: kHeading2RegularStyle,
                       controller: _phoneController,
                       validator: notNullValidator,
@@ -75,17 +111,10 @@ class _AddANewJobPageState extends State<AddANewJobPage> {
                   SizedBox(height: 12),
                   TextFormField(
                       style: kHeading2RegularStyle,
-                      controller: _orgTypeController,
-                      validator: notNullValidator,
-                      decoration: kTextFieldInputDecoration.copyWith(
-                          labelText: "Organisation Type")),
-                  SizedBox(height: 12),
-                  TextFormField(
-                      style: kHeading2RegularStyle,
                       controller: _salaryController,
                       validator: notNullValidator,
                       decoration: kTextFieldInputDecoration.copyWith(
-                          labelText: "Salary per hour")),
+                          labelText: "Salary")),
                   SizedBox(height: 12),
                   TextFormField(
                       style: kHeading2RegularStyle,
@@ -98,43 +127,43 @@ class _AddANewJobPageState extends State<AddANewJobPage> {
                   TextFormField(
                       style: kHeading2RegularStyle,
                       controller: _requirementsController,
-                      maxLines: 4,
                       validator: notNullValidator,
+                      maxLines: 4,
                       decoration: kTextFieldInputDecoration.copyWith(
                           labelText: "Requirements")),
                   SizedBox(height: 20),
                   ElevatedButton(
                     style: kBigButtonStyle,
-                    child: Text("Add A New Job"),
+                    child: Text("Save Edit Job"),
                     onPressed: () async {
-                      if (_addJobFormKey.currentState!.validate()) {
-                        var jobData = JobProfile(
-                            jobName: _jobNameController.text.trim(),
-                            jobAddress: _orgAddressController.text.trim(),
-                            jobLocation: _locationController.text.trim(),
-                            empEmail: widget.empProfile.email,
-                            empPhone: _phoneController.text.trim(),
-                            orgType: _orgTypeController.text.trim(),
-                            orgName: widget.empProfile.orgName,
-                            salaryPerHr: _salaryController.text.trim(),
-                            jobDescription:
-                            _jobDescriptionController.text.trim(),
-                            jobRequirements:
-                            _requirementsController.text.trim(),
-                            orgImageUrl: widget.empProfile.orgImageUrl)
-                            .toJson();
+                      //Update Job details in firestore
+                      if (_editJobFormKey.currentState!.validate()) {
+                        var jobData = {
+                          'jobName': _jobNameController.text.trim(),
+                          'jobAddress': _orgAddressController.text.trim(),
+                          'jobLocation': _locationController.text.trim(),
+                          'empEmail': _contactEmailController.text.trim(),
+                          'empPhone': _phoneController.text.trim(),
+                          'orgType': _orgTypeController.text.trim(),
+                          'salaryPerHr': _salaryController.text.trim(),
+                          'jobDescription':
+                          _jobDescriptionController.text.trim(),
+                          'jobRequirements':
+                          _requirementsController.text.trim(),
+                        };
 
-                        //saving job Data to the firestore database
-                        await JobsDBService.saveJobData(jobData);
+                        //Update job Data to the firestore database
+                        await JobsDBService.updateJobData(
+                            jobData: jobData, docIdToUpdate: widget.jobProfile.jobID!);
 
-                        //reset text fields and show a toast message
-                        clearControllers();
+                        //show a toast message
+
                         successToast(
-                            context, "New Job Added", kBigButtonTextStyle);
+                            context, "Job Updated", kBigButtonTextStyle);
                       }
                     },
                   ),
-                  SizedBox(height: 40),
+                  SizedBox(height: 20),
                 ],
               ),
             ),
@@ -142,17 +171,5 @@ class _AddANewJobPageState extends State<AddANewJobPage> {
         ),
       ),
     );
-  }
-
-  void clearControllers() {
-    _jobNameController.clear();
-    _orgAddressController.clear();
-    _locationController.clear();
-    _contactEmailController.clear();
-    _phoneController.clear();
-    _orgTypeController.clear();
-    _salaryController.clear();
-    _jobDescriptionController.clear();
-    _requirementsController.clear();
   }
 }

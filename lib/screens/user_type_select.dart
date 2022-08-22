@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jobrecruitmentapp_hybrid/constants/style.dart';
-import 'package:jobrecruitmentapp_hybrid/screens/social_login.dart';
-
+import '../constants/style.dart';
+import 'login_selector_screen.dart';
 import 'email_login.dart';
 
 enum UserType { employer, jobseeker, admin }
 
 class UserTypeSelectScreen extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +63,7 @@ class UserTypeSelectScreen extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SocialLoginScreen(
+                        builder: (context) => LoginSelectorScreen(
                           userType: UserType.employer,
                         )));
               },
@@ -79,7 +77,7 @@ class UserTypeSelectScreen extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SocialLoginScreen(
+                        builder: (context) => LoginSelectorScreen(
                           userType: UserType.jobseeker,
                         )));
               },

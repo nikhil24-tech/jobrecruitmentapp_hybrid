@@ -2,37 +2,43 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../constants/style.dart';
-import '../../../controllers/job_saved_applied_checker.dart';
 import '../../../models/job_profile.dart';
 import '../../../services/job_kart_db_service.dart';
-import '../../../widgets/JobSeeker/js_job_listing_widget.dart';
+import '../../../widgets/job_listing_widget.dart';
 
-class JobSeekerHomePage extends StatefulWidget {
+class jobsPage extends StatefulWidget {
   @override
-  State<JobSeekerHomePage> createState() => _JobSeekerHomePageState();
+  State<jobsPage> createState() => _jobsPageState();
 }
-//user details that will be initialized by getUserDetails() method called by
-//init state method of this class
 
-String? userEmail;
-String? userProfilePicUrl;
+String? empLogoUrl;
+String? empEmail;
 
-class _JobSeekerHomePageState extends State<JobSeekerHomePage> {
+class _jobsPageState extends State<jobsPage> {
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
     //load image from firebase
-    getuserDetails();
+    getEmployerEmail();
+    setEmpImageUrlInCache();
   }
 
-  getuserDetails() async {
+  getEmployerEmail() async {
     //get the email from shared prefs
     final userDataCache = await SharedPreferences.getInstance();
-    userEmail = userDataCache.getString("loggedInUserEmail")!;
-    userProfilePicUrl = await UserDBService.getJSImageUrl(userEmail!);
+    empEmail = userDataCache.getString("loggedInUserEmail");
+    print("The email of logged in user is $empEmail");
+  }
+
+  setEmpImageUrlInCache() async {
+    //get the email from shared prefs
+    final userDataCache = await SharedPreferences.getInstance();
+    empEmail = userDataCache.getString("loggedInUserEmail");
+    empLogoUrl = await UserDBService.getOrgImageUrl(empEmail!);
     // saving the image url in shared prefs
     await userDataCache.setString(
-        'loggedInUserImageUrl', userProfilePicUrl ?? kLogoImageUrl);
+        'loggedInUserImageUrl', empLogoUrl ?? kLogoImageUrl);
   }
 
   @override
@@ -57,16 +63,14 @@ class _JobSeekerHomePageState extends State<JobSeekerHomePage> {
                 if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                  //Get a list of all the jobs posted by all employers
-
-                  final jobsPostedByAllOrg = snapshot.data!.docs
+                  final jobsPostedByOrg = snapshot.data!.docs
                       .map((doc) => JobProfile.fromDocument(doc))
-                      .toList();
+                      .where((jobProfile) {
+                    return jobProfile.empEmail == empEmail;
+                  }).toList();
 
                   //Build a list view of jobs posted by employer
-                  return JobsPostedByAllOrgView(
-                      userEmail: userEmail!,
-                      jobsPostedByAllOrg: jobsPostedByAllOrg);
+                  return JobsPostedByOrgView(jobsPostedByOrg: jobsPostedByOrg);
                 } else if (snapshot.connectionState ==
                     ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -84,30 +88,23 @@ class _JobSeekerHomePageState extends State<JobSeekerHomePage> {
   }
 }
 
-class JobsPostedByAllOrgView extends StatelessWidget {
-  final List<JobProfile> jobsPostedByAllOrg;
-  String userEmail;
-  JobsPostedByAllOrgView(
-      {required List<JobProfile> this.jobsPostedByAllOrg,
-        required this.userEmail});
+class JobsPostedByOrgView extends StatelessWidget {
+  final List<JobProfile> jobsPostedByOrg;
+  const JobsPostedByOrgView({required List<JobProfile> this.jobsPostedByOrg});
 
   @override
   Widget build(BuildContext context) {
     return Flexible(
-      child: ListView.builder(
-        itemCount: jobsPostedByAllOrg.length,
+      child: jobsPostedByOrg.length == 0
+          ? Center(child: Text('No Jobs', style: kHeading2BoldStyle))
+          : ListView.builder(
+        itemCount: jobsPostedByOrg.length,
         itemBuilder: ((context, index) {
           return Column(
             children: [
-              JobSeekerJobListingWidget(
-                userEmail:userEmail,
-                jobPosted: jobsPostedByAllOrg[index],
-                isJobSaved: isJobSaved(
-                    jobPosting: jobsPostedByAllOrg[index],
-                    userEmail: userEmail),
-                isJobApplied: isJobApplied(
-                    jobPosting: jobsPostedByAllOrg[index],
-                    userEmail: userEmail),
+              JobListingWidget(
+                isAdmin: false,
+                jobProfile: jobsPostedByOrg[index],
               ),
               SizedBox(height: 15),
             ],

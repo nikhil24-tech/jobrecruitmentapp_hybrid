@@ -1,18 +1,23 @@
-import 'package:flutter/cupertino.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jobrecruitmentapp_hybrid/screens/user_type_select.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants/style.dart';
-
-import 'email_signup.dart';
+import '../controllers/login_signup_validators.dart';
+import '../controllers/navigate_to_home_screen.dart';
+import '../services/job_kart_db_service.dart';
+import '../widgets/motion_toasts.dart';
+import 'email_sign_up.dart';
 
 class EmailLoginScreen extends StatefulWidget {
-  UserType userType;
+  final UserType userType;
   EmailLoginScreen({required this.userType});
 
   @override
   State<EmailLoginScreen> createState() => _EmailLoginScreenState();
 }
+
+bool isLoggingIn = false;
 
 class _EmailLoginScreenState extends State<EmailLoginScreen> {
   String _errorMessage = '';
@@ -53,27 +58,95 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                     ),
                     SizedBox(height: 25),
                     TextFormField(
+                      style: kHeading2RegularStyle,
                       controller: _emailTextController,
                       decoration: kTextFieldInputDecoration.copyWith(
                         labelText: "Email",
                       ),
-
+                      validator: emailValidator,
                     ),
                     SizedBox(height: 12),
                     TextFormField(
+                      obscureText: true,
+                      style: kHeading2RegularStyle,
                       controller: _passwordController,
                       decoration: kTextFieldInputDecoration.copyWith(
                         labelText: "Password",
                       ),
-
+                      validator: passwordValidator,
                     ),
                     SizedBox(height: 50),
                     ElevatedButton(
-                        style: kBigButtonStyle,
-                        child: Text('Sign In', style: kBigButtonTextStyle),
-                        onPressed: () async {
+                      style: kBigButtonStyle,
+                      child: isLoggingIn == true
+                          ? Text('Signing In', style: kBigButtonTextStyle)
+                          : Text('Sign In', style: kBigButtonTextStyle),
+                      onPressed: isLoggingIn == true
+                          ? null
+                          : () async {
+                        if (_signInFormKey.currentState!.validate()) {
+                          setState(() {
+                            isLoggingIn = true;
+                          });
+                          bool? isUserBlocked =
+                          await UserDBService.getIsBlocked(
+                              email: _emailTextController.text);
+                          print("user blocked: $isUserBlocked");
+                          if (isUserBlocked == null) {
+                            setState(() {
+                              isLoggingIn = false;
+                            });
+                            errorrToast(context, "User doesn't exist",
+                                kBigButtonTextStyle);
+                          } else if (isUserBlocked == false) {
+                            //Login if the user is not blocked
+                            try {
+                              UserCredential _userCred =
+                              await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                  email: _emailTextController.text
+                                      .trim(),
+                                  password: _passwordController
+                                      .text
+                                      .trim());
 
+                              //saving user email to cache
+                              final userDataCache =
+                              await SharedPreferences.getInstance();
+                              await userDataCache.setString(
+                                  'loggedInUserEmail',
+                                  _emailTextController.text.trim());
+
+                              await navigateToHomeScreen(
+                                  userCred: _userCred, context: context);
+                              //set isLogingIn to false
+                              setState(() {
+                                isLoggingIn = false;
+                              });
+                            } on FirebaseAuthException catch (error) {
+                              setState(
+                                      () => _errorMessage = error.message!);
+                              setState(() {
+                                isLoggingIn = false;
+                              });
+                              infoToast(
+                                  context,
+                                  _errorMessage,
+                                  kSmallButtonTextStyle.copyWith(
+                                      color: Colors.white, fontSize: 16));
+                            }
+                          } else {
+                            setState(() {
+                              isLoggingIn = false;
+                            });
+                            infoToast(
+                                context,
+                                'Your account is blocked. Please contact admin.',
+                                kSmallButtonTextStyle.copyWith(
+                                    color: Colors.white, fontSize: 16));
+                          }
                         }
+                      },
                     ),
                     SizedBox(height: 10),
                     widget.userType == UserType.admin
@@ -91,9 +164,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      EmailSignUpScreen(
-                                          userType: widget.userType),
+                                  builder: (context) => EmailSignUpScreen(
+                                      userType: widget.userType),
                                 ),
                               );
                             }),
@@ -107,4 +179,5 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
         ),
       ),
     );
-  }}
+  }
+}

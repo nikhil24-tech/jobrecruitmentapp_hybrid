@@ -1,35 +1,34 @@
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../constants/style.dart';
+import '../../../models/jk_user.dart';
+import '../../../services/job_kart_db_service.dart';
 import 'add_new_job_page.dart';
+import 'employer_posted_jobs_page.dart';
 
+//PageController _pageViewController = PageController(initialPage: 0);
 
-
-PageController _pageViewController = PageController(initialPage: 0);
 class AddEditJobsPage extends StatefulWidget {
   @override
   State<AddEditJobsPage> createState() => _AddEditJobsPageState();
 }
 
+String empLogoImageUrl = "";
+String? userEmail;
+JKUser? empProfile;
+
 class _AddEditJobsPageState extends State<AddEditJobsPage> {
   @override
-  Widget build(BuildContext context) {
-    return PageView(
-
-      physics: NeverScrollableScrollPhysics(),
-      controller: _pageViewController,
-      children: [
-        AddEditJobsWidget(),
-        AddANewJobPage(),
-      ],
-    );
+  void initState() {
+    getEmpProfile();
+    super.initState();
   }
-}
 
-class AddEditJobsWidget extends StatelessWidget {
-  const AddEditJobsWidget({
-    Key? key,
-  }) : super(key: key);
+  getEmpProfile() async {
+    final userDataCache = await SharedPreferences.getInstance();
+    userEmail = await userDataCache.getString("loggedInUserEmail")!;
+    empProfile = await UserDBService.getJobSeekerProfile(email: userEmail!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,25 +39,23 @@ class AddEditJobsWidget extends StatelessWidget {
         ElevatedButton(
           style: kBigButtonStyle,
           child: Text("Add A New Job"),
-          onPressed: () {
-            _pageViewController.animateToPage(
-              1,
-              duration: Duration(milliseconds: 10),
-              curve: Curves.easeIn,
-            );
-          },
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddANewJobPage(empProfile: empProfile!),
+            ),
+          ),
         ),
         SizedBox(height: 15),
         ElevatedButton(
           style: kBigButtonStyle,
           child: Text("Edit Jobs"),
-          onPressed: () {
-            _pageViewController.animateToPage(
-              2,
-              duration: Duration(milliseconds: 10),
-              curve: Curves.easeIn,
-            );
-          },
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EmployerPostedJobsPage(),
+            ),
+          ),
         ),
         Spacer()
       ],
