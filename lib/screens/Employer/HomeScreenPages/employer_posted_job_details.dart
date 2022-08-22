@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../constants/style.dart';
 import '../../../controllers/user_details_contorller.dart';
 import '../../../models/job_profile.dart';
-import '../../../widgets/JobSeeker/delete_job_dialog.dart';
+import '../../../widgets/delete_job_dialog.dart';
 import 'employer_posted_jobs_page.dart';
 import 'posted_job_edit_page.dart';
 

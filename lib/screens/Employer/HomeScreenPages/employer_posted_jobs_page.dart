@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../constants/style.dart';
 import '../../../models/job_profile.dart';
-import '../../../widgets/JobSeeker/editable_job_listing.dart';
+import '../../../widgets/editable_job_listing.dart';
 
 class EmployerPostedJobsPage extends StatefulWidget {
   @override
