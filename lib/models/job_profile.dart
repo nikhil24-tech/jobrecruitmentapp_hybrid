@@ -36,18 +36,42 @@ class JobProfile {
 
   JobProfile.fromDocument(QueryDocumentSnapshot data) {
     jobID = data.id; // getting the doc id of the document from firestore
-    jobName = data.get('jobName') ?? 'jobName';
-    orgName = data.get('orgName') ?? 'orgName';
-    orgType = data.get('orgType') ?? 'orgType';
-    jobLocation = data.get('jobLocation') ?? 'jobLocation';
-    jobAddress = data.get('jobAddress') ?? 'jobAddress';
-    salaryPerHr = data.get('salaryPerHr') ?? 'salaryPerHr';
-    jobDescription = data.get('jobDescription') ?? 'jobDescription';
-    jobRequirements = data.get('jobRequirements') ?? 'jobRequirements';
-    empEmail = data.get('empEmail') ?? 'empEmail';
-    empPhone = data.get('empPhone') ?? 'empPhone';
-    orgImageUrl = data.get('orgImageUrl') ?? 'orgImageUrl';
-    jsSavedAndApplied = data.get('jsSavedAndApplied') ?? [];
+    jobName = data.data().toString().contains('jobName')
+        ? data.get('jobName') ?? 'jobName'
+        : 'jobName';
+    orgName = data.data().toString().contains('orgName')
+        ? data.get('orgName') ?? 'orgName'
+        : 'orgName';
+    orgType = data.data().toString().contains('orgType')
+        ? data.get('orgType') ?? 'orgType'
+        : 'orgType';
+    jobLocation = data.data().toString().contains('jobLocation')
+        ? data.get('jobLocation') ?? 'jobLocation'
+        : 'jobLocation';
+    jobAddress = data.data().toString().contains('jobAddress')
+        ? data.get('jobAddress') ?? 'jobAddress'
+        : 'jobAddress';
+    salaryPerHr = data.data().toString().contains('salaryPerHr')
+        ? data.get('salaryPerHr') ?? 'salaryPerHr'
+        : 'salaryPerHr';
+    jobDescription = data.data().toString().contains('jobDescription')
+        ? data.get('jobDescription') ?? 'jobDescription'
+        : 'jobDescription';
+    jobRequirements = data.data().toString().contains('jobRequirements')
+        ? data.get('jobRequirements') ?? 'jobRequirements'
+        : 'jobRequirements';
+    empEmail = data.data().toString().contains('empEmail')
+        ? data.get('empEmail') ?? 'empEmail'
+        : 'empEmail';
+    empPhone = data.data().toString().contains('empPhone')
+        ? data.get('empPhone') ?? 'empPhone'
+        : 'empPhone';
+    orgImageUrl = data.data().toString().contains('orgImageUrl')
+        ? data.get('orgImageUrl') ?? 'orgImageUrl'
+        : 'orgImageUrl';
+    jsSavedAndApplied = data.data().toString().contains('jsSavedAndApplied')
+        ? ((data.get('jsSavedAndApplied')) ?? [])
+        : [];
   }
 
   Map<String, dynamic> toJson() {
