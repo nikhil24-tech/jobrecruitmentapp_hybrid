@@ -102,12 +102,12 @@ class JobsPostedByAllOrgView extends StatelessWidget {
               JobSeekerJobListingWidget(
                 userEmail:userEmail,
                 jobPosted: jobsPostedByAllOrg[index],
-                isJobSaved: isJobSaved(
-                    jobPosting: jobsPostedByAllOrg[index],
-                    userEmail: userEmail),
-                isJobApplied: isJobApplied(
-                    jobPosting: jobsPostedByAllOrg[index],
-                    userEmail: userEmail),
+                // isJobSaved: isJobSaved(
+                //     jobPosting: jobsPostedByAllOrg[index],
+                //     userEmail: userEmail),
+                // isJobApplied: isJobApplied(
+                //     jobPosting: jobsPostedByAllOrg[index],
+                //     userEmail: userEmail),
               ),
               SizedBox(height: 15),
             ],

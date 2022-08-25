@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:jobrecruitmentapp_hybrid/models/applied_jobs.dart';
+import 'package:jobrecruitmentapp_hybrid/models/jk_user.dart';
 import '../../../constants/style.dart';
 import '../../../models/job_profile.dart';
 import '../../../services/job_kart_db_service.dart';
 import '../../../widgets/JobSeeker/apply_job_dialog.dart';
 import '../../Employer/HomeScreenPages/add_edit_page.dart';
 
-class JSJobDetailsPage extends StatelessWidget {
+class JSJobDetailsPage extends StatefulWidget {
   JobProfile? jobPosted;
   bool isJobSaved;
   bool isJobApplied;
 
-  JSJobDetailsPage(
-      {required this.jobPosted,
-      required this.isJobSaved,
-      required this.isJobApplied});
+  JSJobDetailsPage({
+    required this.jobPosted,
+    required this.isJobSaved,
+    required this.isJobApplied,
+  });
 
+  @override
+  State<JSJobDetailsPage> createState() => _JSJobDetailsPageState();
+}
+
+class _JSJobDetailsPageState extends State<JSJobDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +32,7 @@ class JSJobDetailsPage extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 23),
             width: double.maxFinite,
             child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               SizedBox(height: 12),
               Align(child: Text("JobKart", style: kSmallLogoTextStyle)),
               SizedBox(height: 12),
@@ -44,18 +52,18 @@ class JSJobDetailsPage extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(jobPosted!.jobName ?? "Job Name",
+                            Text(widget.jobPosted!.jobName ?? "Job Name",
                                 style: kHeading2BoldStyle.copyWith(
                                     color: Color(0xFF112E6F))),
                             SizedBox(height: 5),
-                            Text(jobPosted!.orgType ?? "orgType",
+                            Text(widget.jobPosted!.orgType ?? "orgType",
                                 style: kHeading3DarkStyle),
                             SizedBox(height: 5),
-                            Text(jobPosted!.jobLocation ?? "location",
+                            Text(widget.jobPosted!.jobLocation ?? "location",
                                 style: kAppTextDarkBoldStyle),
                             Chip(
                               label: Text(
-                                  '\$ ${jobPosted!.salaryPerHr ?? "Salary"} an hour',
+                                  '\$ ${widget.jobPosted!.salaryPerHr ?? "Salary"} an hour',
                                   style: kAppTextBoldWhiteStyle),
                               backgroundColor: kThemeColor1,
                             ),
@@ -77,7 +85,9 @@ class JSJobDetailsPage extends StatelessWidget {
                       children: [
                         Text("Job Description", style: kHeading3DarkBoldStyle),
                         SizedBox(height: 10),
-                        Text(jobPosted!.jobDescription ?? "jobDescription",
+                        Text(
+                            widget.jobPosted!.jobDescription ??
+                                "jobDescription",
                             style: kAppRegularTextStyle),
 
                         SizedBox(height: 10),
@@ -85,7 +95,8 @@ class JSJobDetailsPage extends StatelessWidget {
                         //Job Requirements
                         Text("Requirements", style: kHeading3DarkBoldStyle),
                         SizedBox(height: 10),
-                        Text(jobPosted!.jobRequirements ?? "requirements",
+                        Text(
+                            widget.jobPosted!.jobRequirements ?? "requirements",
                             style: kAppRegularTextStyle),
                         SizedBox(height: 10),
 
@@ -94,13 +105,13 @@ class JSJobDetailsPage extends StatelessWidget {
                             style: kHeading3DarkBoldStyle),
                         SizedBox(height: 10),
                         Text(
-                            "Email: ${jobPosted!.empEmail ?? "email"} \nPhone: ${jobPosted!.empPhone ?? "phone"}",
+                            "Email: ${widget.jobPosted!.empEmail ?? "email"} \nPhone: ${widget.jobPosted!.empPhone ?? "phone"}",
                             style: kAppRegularTextStyle),
                         SizedBox(height: 10),
                         Text("Company Address", style: kHeading3DarkBoldStyle),
                         SizedBox(height: 10),
                         Text(
-                            "${jobPosted!.jobAddress ?? "orgAddress"} \n${jobPosted!.jobLocation ?? "location"}",
+                            "${widget.jobPosted!.jobAddress ?? "orgAddress"} \n${widget.jobPosted!.jobLocation ?? "location"}",
                             style: kAppRegularTextStyle),
                         SizedBox(height: 10),
                         Row(
@@ -108,35 +119,78 @@ class JSJobDetailsPage extends StatelessWidget {
                           children: [
                             ElevatedButton(
                               style: kSmallButtonStyle,
-                              child: isJobApplied == true
+                              child: widget.isJobApplied == true
                                   ? Text("Applied")
                                   : Text("Apply Job"),
-                              onPressed: isJobApplied == true
+                              onPressed: widget.isJobApplied == true
                                   ? null
                                   : () {
-                                      showApplyJobDialog(
-                                        context: context,
-                                        savedJob: jobPosted!,
-                                        userEmail: userEmail!,
-                                        isJobSaved: isJobSaved,
-                                      );
-                                    },
+                                showApplyJobDialog(
+                                  context: context,
+                                  savedJob: widget.jobPosted!,
+                                  userEmail: userEmail!,
+                                  isJobSaved: widget.isJobSaved,
+                                );
+                              },
                             ),
                             SizedBox(width: 17),
-                            isJobApplied == true
+                            widget.isJobApplied == true
                                 ? Text("")
                                 : ElevatedButton(
-                                    style: kSmallButtonStyle,
-                                    child: isJobSaved == true
-                                        ? Text("Saved")
-                                        : Text("Save Job"),
-                                    onPressed: isJobSaved == true
-                                        ? null
-                                        : () async {
-                                            await JobsDBService.jsSaveJob(
-                                                jobProfile: jobPosted!);
-                                          },
-                                  ),
+                              style: kSmallButtonStyle,
+                              child: widget.isJobSaved == true
+                                  ? Text("Saved")
+                                  : Text("Save Job"),
+                              onPressed: widget.isJobSaved == true
+                                  ? null
+                                  : () async {
+                                JKUser jsProfile =
+                                await UserDBService
+                                    .getJKProfile(
+                                    email: userEmail!);
+
+                                //Creating AppliedJob Object
+                                AppliedJob appliedJob = AppliedJob(
+                                  jobID: widget.jobPosted!.jobID,
+                                  jobName:
+                                  widget.jobPosted!.jobName,
+                                  orgType:
+                                  widget.jobPosted!.orgType,
+                                  jobLocation:
+                                  widget.jobPosted!.jobLocation,
+                                  salaryPerHr:
+                                  widget.jobPosted!.salaryPerHr,
+                                  jobDescription: widget
+                                      .jobPosted!.jobDescription,
+                                  requirements: widget
+                                      .jobPosted!.jobRequirements,
+                                  empEmail:
+                                  widget.jobPosted!.empEmail,
+                                  empPhone:
+                                  widget.jobPosted!.empPhone,
+                                  orgAddress:
+                                  widget.jobPosted!.jobAddress,
+                                  jsName: jsProfile.jsName,
+                                  jsPhone: jsProfile.jsPhone,
+                                  jsEmail: jsProfile.email,
+                                  jsAddress: jsProfile.jsAddress,
+                                  jsAboutMe: jsProfile.jsAboutMe,
+                                  jsSkills: jsProfile.jsSkills,
+                                  jsExperience: jsProfile.jsJobXp,
+                                  jsImageUrl: jsProfile.jsImageUrl,
+                                );
+
+                                //Saving AppliedJob oject to Applied jobs collection
+
+                                await SavedJobsDBService
+                                    .saveSavedJobData(
+                                    savedJobData:
+                                    appliedJob.toJson());
+                                setState(() {
+                                  widget.isJobSaved = true;
+                                });
+                              },
+                            ),
                           ],
                         ),
                       ],
