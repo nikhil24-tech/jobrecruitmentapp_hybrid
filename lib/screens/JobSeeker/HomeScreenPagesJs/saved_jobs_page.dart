@@ -44,7 +44,10 @@ class _SavedJobsPageState extends State<SavedJobsPage> {
           ),
           SizedBox(height: 12),
           StreamBuilder<QuerySnapshot<Map>>(
-              stream: FirebaseFirestore.instance.collection('jobs').snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection('savedJobs')
+                  .where("jsEmail", isEqualTo: userEmail)
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
@@ -59,17 +62,18 @@ class _SavedJobsPageState extends State<SavedJobsPage> {
                   //Get a list of all the jobs saved by the user
                   List<JobProfile> savedJobs = [];
                   for (var job in allJobs) {
-                    if (job.jsSavedAndApplied != []) {
-                      bool savedJobCondition = job.jsSavedAndApplied!
-                          .where((jsSavedAndApplied) =>
-                      jsSavedAndApplied["jsEmail"] == userEmail &&
-                          jsSavedAndApplied["isSaved"] == true &&
-                          jsSavedAndApplied["isApplied"] == false)
-                          .isNotEmpty;
-                      if (savedJobCondition == true) {
-                        savedJobs.add(job);
-                      }
-                    }
+                    savedJobs.add(job);
+                    // if (job.jsSavedAndApplied != []) {
+                    //   bool savedJobCondition = job.jsSavedAndApplied!
+                    //       .where((jsSavedAndApplied) =>
+                    //           jsSavedAndApplied["jsEmail"] == userEmail &&
+                    //           jsSavedAndApplied["isSaved"] == true &&
+                    //           jsSavedAndApplied["isApplied"] == false)
+                    //       .isNotEmpty;
+                    //   if (savedJobCondition == true) {
+
+                    //   }
+                    // }
                   }
 
                   //Build a list view of jobs posted by employer

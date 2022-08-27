@@ -15,9 +15,9 @@ class SavedJobWidget extends StatelessWidget {
 
   SavedJobWidget(
       {required this.savedJob,
-      required this.userEmail,
-      required this.isJobSaved,
-      required this.isJobApplied});
+        required this.userEmail,
+        required this.isJobSaved,
+        required this.isJobApplied});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,12 +32,12 @@ class SavedJobWidget extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               Text(
-                    savedJob.jobName!.length > 18
-                        ? (savedJob.jobName!.substring(0, 15)) + '...'
-                        : savedJob.jobName!,
-                    style:
-                        kHeading2BoldStyle.copyWith(color: Color(0xFF112E6F))),
+              Text(
+                  savedJob.jobName!.length > 18
+                      ? (savedJob.jobName!.substring(0, 15)) + '...'
+                      : savedJob.jobName!,
+                  style:
+                  kHeading2BoldStyle.copyWith(color: Color(0xFF112E6F))),
               SizedBox(height: 5),
               Text(
                 savedJob.orgType ?? "Org Type",
@@ -59,29 +59,29 @@ class SavedJobWidget extends StatelessWidget {
               ElevatedButton(
                 style: kSmallButtonStyle,
                 child:
-                    isJobApplied == true ? Text("Applied") : Text("Apply Job"),
+                isJobApplied == true ? Text("Applied") : Text("Apply Job"),
                 onPressed: isJobApplied == true
                     ? null
                     : () {
-                        showApplyJobDialog(
-                            context: context,
-                            savedJob: savedJob,
-                            userEmail: userEmail,
-                            isJobSaved: isJobSaved);
-                      },
+                  showApplyJobDialog(
+                      context: context,
+                      savedJob: savedJob,
+                      userEmail: userEmail,
+                      isJobSaved: isJobSaved);
+                },
               ),
               SizedBox(height: 17),
               isJobApplied == true
                   ? Text("")
                   : ElevatedButton(
-                      style: kSmallButtonStyle.copyWith(
-                          backgroundColor:
-                              MaterialStateProperty.all(kDeleteRedColor)),
-                      child: Text("Unsave Job"),
-                      onPressed: () async {
-                        await JobsDBService.jsUnSaveJob(jobProfile: savedJob);
-                      },
-                    ),
+                style: kSmallButtonStyle.copyWith(
+                    backgroundColor:
+                    MaterialStateProperty.all(kDeleteRedColor)),
+                child: Text("Unsave Job"),
+                onPressed: () async {
+                  await JobsDBService.jsUnSaveJob(jobProfile: savedJob);
+                },
+              ),
             ],
           ),
         ],

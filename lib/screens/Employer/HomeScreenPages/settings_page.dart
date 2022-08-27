@@ -99,11 +99,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: Text("Sign Out"),
                   onPressed: () async {
                     final fBookSignInProvider =
-                    Provider.of<FBookSignInProvider>(context,
+                    Provider.of<FBookSignInProvider?>(context,
                         listen: false);
-                         fBookSignInProvider.isSignedIn ==
+                    (fBookSignInProvider?.isSignedIn ?? false) ==
                         true //if signed in with facebook
-                        ? await fBookSignInProvider.logout()
+                        ? await fBookSignInProvider?.logout()
                         : await FirebaseAuth.instance
                         .signOut(); //email user signout
                     final userDataCache = await SharedPreferences.getInstance();
