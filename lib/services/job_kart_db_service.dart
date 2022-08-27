@@ -5,11 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:jobrecruitmentapp_hybrid/constants/style.dart';
 import 'package:jobrecruitmentapp_hybrid/models/jk_user.dart';
 import 'package:jobrecruitmentapp_hybrid/services/location_sevices.dart';
-<<<<<<< Updated upstream
-//import 'package:sendgrid_mailer/sendgrid_mailer.dart';
-=======
 import 'package:sendgrid_mailer/sendgrid_mailer.dart';
->>>>>>> Stashed changes
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/job_profile.dart';
 
@@ -172,15 +168,13 @@ class AppliedJobsDBService {
   FirebaseFirestore.instance.collection('appliedJobs');
 
   static Future<void> saveAppliedJobData({required appliedJobData}) async {
-   // write a function to save JKUser model class data to firestore
+    //write a function to save JKUser model class data to firestore
     try {
       Map pos = await determinePosition();
       Map<String, dynamic> newMap = Map<String, dynamic>.from(appliedJobData);
       newMap['lat'] = pos['lat'];
       newMap['lng'] = pos['lng'];
       await appliedJobCollectionReferece.add(newMap);
-<<<<<<< Updated upstream
-=======
       try {
         final mailer = Mailer(
             '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');
@@ -203,7 +197,6 @@ class AppliedJobsDBService {
       } catch (e) {
         print(e.toString());
       }
->>>>>>> Stashed changes
     } on FirebaseException catch (error) {
       print(error.message);
     }
