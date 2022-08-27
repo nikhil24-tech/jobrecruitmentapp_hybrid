@@ -16,7 +16,7 @@ class JobDetailsPage extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 23),
           width: double.maxFinite,
           child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             SizedBox(height: 12),
             Align(child: Text("JobKart", style: kSmallLogoTextStyle)),
             SizedBox(height: 12),
@@ -58,11 +58,21 @@ class JobDetailsPage extends StatelessWidget {
                         children: [
                           jobProfile!.orgImageUrl == null
                               ? Image.asset('assets/images/jobPicIcon.png',
-                                  height: 69, width: 63)
+                              height: 69, width: 63)
                               : Image.network(
-                                  jobProfile!.orgImageUrl ?? kLogoImageUrl,
-                                  height: 69,
-                                  width: 63),
+                            jobProfile!.orgImageUrl ?? kLogoImageUrl,
+                            height: 69,
+                            width: 63,
+                            errorBuilder: (a, b, c) {
+                              return SizedBox(
+                                height: 69,
+                                width: 63,
+                                child: Center(
+                                  child: Icon(Icons.error),
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ],
@@ -104,9 +114,8 @@ class JobDetailsPage extends StatelessWidget {
                   SizedBox(height: 15),
                   isAdmin == true
                       ? Align(
-                          alignment: Alignment.centerRight,
-
-                        )
+                    alignment: Alignment.centerRight,
+                  )
                       : Text(""),
                 ],
               ),

@@ -5,7 +5,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:jobrecruitmentapp_hybrid/constants/style.dart';
 import 'package:jobrecruitmentapp_hybrid/models/jk_user.dart';
 import 'package:jobrecruitmentapp_hybrid/services/location_sevices.dart';
+<<<<<<< Updated upstream
 //import 'package:sendgrid_mailer/sendgrid_mailer.dart';
+=======
+import 'package:sendgrid_mailer/sendgrid_mailer.dart';
+>>>>>>> Stashed changes
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/job_profile.dart';
 
@@ -175,6 +179,31 @@ class AppliedJobsDBService {
       newMap['lat'] = pos['lat'];
       newMap['lng'] = pos['lng'];
       await appliedJobCollectionReferece.add(newMap);
+<<<<<<< Updated upstream
+=======
+      try {
+        final mailer = Mailer(
+            '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');
+        final toAddress = Address('nknikhil2497@gmail.com');
+        final fromAddress = Address('jobkart7722@gmail.com');
+        final content = Content('text/plain',
+            '''Congratulations!, You have successfully applied for this job.
+            Job Details : 
+            Title - ${appliedJobData['jobName'] ?? ""}
+
+        ''');
+        final subject = 'Hello Subject!';
+        final personalization = Personalization([toAddress]);
+
+        final email =
+        Email([personalization], fromAddress, subject, content: [content]);
+        mailer.send(email).then((result) {
+          print(result.toString());
+        });
+      } catch (e) {
+        print(e.toString());
+      }
+>>>>>>> Stashed changes
     } on FirebaseException catch (error) {
       print(error.message);
     }

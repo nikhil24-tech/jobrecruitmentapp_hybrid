@@ -65,9 +65,7 @@ class _jobsPageState extends State<jobsPage> {
                 } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                   final jobsPostedByOrg = snapshot.data!.docs
                       .map((doc) => JobProfile.fromDocument(doc))
-                      .where((jobProfile) {
-                    return jobProfile.empEmail == empEmail;
-                  }).toList();
+                      .toList();
 
                   //Build a list view of jobs posted by employer
                   return JobsPostedByOrgView(jobsPostedByOrg: jobsPostedByOrg);

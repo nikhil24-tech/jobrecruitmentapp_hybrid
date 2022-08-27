@@ -57,10 +57,13 @@ class JobListingWidget extends StatelessWidget {
                     jobProfile!.orgImageUrl ?? kLogoImageUrl,
                   ),
                   errorBuilder: (ctx, exception, stackTrace) {
-                    return Image.network(kLogoImageUrl,
-                        height: 69,
-                        width:
-                        63); //THE WIDGET YOU WANT TO SHOW IF URL NOT RETURN IMAGE
+                    return SizedBox(
+                      height: 69,
+                      width: 63,
+                      child: Center(
+                        child: Icon(Icons.error),
+                      ),
+                    ); //THE WIDGET YOU WANT TO SHOW IF URL NOT RETURN IMAGE
                   },
                   height: 69,
                   width: 63),
