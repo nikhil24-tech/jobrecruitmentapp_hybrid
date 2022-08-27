@@ -11,8 +11,12 @@ class JobListingWidget extends StatelessWidget {
   bool isAdmin;
   JobProfile? jobProfile;
 
-  JobListingWidget(
-      {required this.isAdmin, required JobProfile this.jobProfile});
+  bool? showApplications;
+  JobListingWidget({
+    required this.isAdmin,
+    required JobProfile this.jobProfile,
+    this.showApplications = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +82,7 @@ class JobListingWidget extends StatelessWidget {
                       builder: (context) => JobDetailsPage(
                         isAdmin: isAdmin,
                         jobProfile: jobProfile!,
+                        showApplications: showApplications,
                       ),
                     ),
                   );

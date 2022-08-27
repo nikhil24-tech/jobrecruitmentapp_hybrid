@@ -13,6 +13,7 @@ class JobProfile {
   String? empEmail;
   String? empPhone;
   String? orgImageUrl;
+  String? applicantEmail;
   List?
   jsSavedAndApplied; // A list of users who have saved or applied for this job.
 
@@ -30,6 +31,7 @@ class JobProfile {
     this.empPhone,
     this.orgImageUrl,
     this.jsSavedAndApplied,
+    this.applicantEmail,
   });
 
 //address = data.get('address');
@@ -42,6 +44,9 @@ class JobProfile {
     orgName = data.data().toString().contains('orgName')
         ? data.get('orgName') ?? 'orgName'
         : 'orgName';
+    applicantEmail = data.data().toString().contains('applicant_selected')
+        ? data.get('applicant_selected') ?? ''
+        : '';
     orgType = data.data().toString().contains('orgType')
         ? data.get('orgType') ?? 'orgType'
         : 'orgType';
