@@ -10,10 +10,16 @@ class JobDetailsPage extends StatelessWidget {
   final JobProfile? jobProfile;
   bool isAdmin;
   bool? showApplications;
+
   JobDetailsPage(
       {required this.isAdmin,
         this.showApplications = false,
         required JobProfile this.jobProfile});
+
+  _handleDelete() {
+    JobsDBService.deleteJobPosting(jobID: jobProfile?.jobID ?? "");
+    Get.back();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,6 +133,17 @@ class JobDetailsPage extends StatelessWidget {
                       isAdmin == true
                           ? Align(
                         alignment: Alignment.centerRight,
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          onPressed: _handleDelete,
+                          color: kDeleteRedColor,
+                          child: Text(
+                            "Delete Job",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
                       )
                           : Text(""),
                     ],
@@ -139,7 +156,7 @@ class JobDetailsPage extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
                     child: Text(
-                        "Cancidate ${jobProfile?.applicantEmail} is selected"),
+                        "Candidate ${jobProfile?.applicantEmail} is selected"),
                   ),
                 )
                     : SizedBox(),
@@ -157,7 +174,7 @@ class JobDetailsPage extends StatelessWidget {
         SizedBox(
           height: 10,
         ),
-        Text("Job Applications"),
+        Text("Job Applicants"),
         StreamBuilder<QuerySnapshot<Map>>(
           stream: FirebaseFirestore.instance
               .collection('appliedJobs')
@@ -190,9 +207,9 @@ class JobDetailsPage extends StatelessWidget {
             } else {
               print("snapshot doesn't have data");
               return Center(
-                  child: Text('No Jobs to display',
+                  child: Text('Nobody is applied for this job yet',
                       style: TextStyle(
-                          fontSize: 30, fontWeight: FontWeight.w500)));
+                          fontSize: 15, fontWeight: FontWeight.w500)));
             }
           },
         ),
@@ -207,7 +224,14 @@ class JobApplicationView extends StatelessWidget {
   _handleAccept() {
     JobsDBService.updateJobData(
         docIdToUpdate: jobApplication?.jobID ?? "",
-        jobData: {"applicant_selected": jobApplication?.empEmail ?? ""});
+        jobData: {"applicant_selected": jobApplication?.jsEmail ?? ""});
+
+    Get.back();
+  }
+
+  _handleReject() {
+    AppliedJobsDBService.deleteAppliedJobByJobID(
+        jobID: jobApplication?.jobID ?? "");
 
     Get.back();
   }
@@ -218,23 +242,46 @@ class JobApplicationView extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(jobApplication!.jsName ?? ""),
-              SizedBox(height: 3),
-              Text(jobApplication!.jsEmail ?? ""),
-              SizedBox(height: 3),
-              Text("Experience : - " + (jobApplication!.jsExperience ?? "")),
-              SizedBox(height: 3),
-            ],
+          SizedBox(
+            width: Get.width / 2.5,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(jobApplication!.jsName ?? ""),
+                SizedBox(height: 3),
+                Text(jobApplication!.jsEmail ?? ""),
+                SizedBox(height: 3),
+                Text("Experience : - " + (jobApplication!.jsExperience ?? "")),
+                SizedBox(height: 3),
+              ],
+            ),
           ),
           Spacer(),
           RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
             onPressed: _handleAccept,
-            color: Colors.green,
-            child: Text("Accept"),
+            color: kThemeColor1,
+            child: Text(
+              "Accept",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            onPressed: _handleReject,
+            color: kDeleteRedColor,
+            child: Text(
+              "Reject",
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
