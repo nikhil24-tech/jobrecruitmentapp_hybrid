@@ -102,7 +102,11 @@ class _JobSeekerJobListingWidgetState extends State<JobSeekerJobListingWidget> {
                 ),
               ],
             ),
-            Column(
+            (widget.jobPosted!.applicantEmail ?? "").isNotEmpty
+                ? SizedBox(
+                width: 100,
+                child: Text("This Job is no longer available"))
+                : Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Column(
@@ -142,44 +146,56 @@ class _JobSeekerJobListingWidgetState extends State<JobSeekerJobListingWidget> {
                         //     jobProfile: widget.jobPosted!);
 //Getting User Profile from DB
                         JKUser jsProfile =
-                        await UserDBService.getJKProfile(
-                            email: widget.userEmail!);
+                        await UserDBService
+                            .getJKProfile(
+                            email: widget
+                                .userEmail!);
 
                         //Creating AppliedJob Object
-                        AppliedJob appliedJob = AppliedJob(
-                          jobID: widget.jobPosted!.jobID,
-                          jobName: widget.jobPosted!.jobName,
-                          orgType: widget.jobPosted!.orgType,
-                          jobLocation:
-                          widget.jobPosted!.jobLocation,
-                          salaryPerHr:
-                          widget.jobPosted!.salaryPerHr,
+                        AppliedJob appliedJob =
+                        AppliedJob(
+                          jobID:
+                          widget.jobPosted!.jobID,
+                          jobName:
+                          widget.jobPosted!.jobName,
+                          orgType:
+                          widget.jobPosted!.orgType,
+                          jobLocation: widget
+                              .jobPosted!.jobLocation,
+                          salaryPerHr: widget
+                              .jobPosted!.salaryPerHr,
                           jobDescription: widget
-                              .jobPosted!.jobDescription,
+                              .jobPosted!
+                              .jobDescription,
                           requirements: widget
-                              .jobPosted!.jobRequirements,
-                          empEmail:
-                          widget.jobPosted!.empEmail,
-                          empPhone:
-                          widget.jobPosted!.empPhone,
-                          orgAddress:
-                          widget.jobPosted!.jobAddress,
+                              .jobPosted!
+                              .jobRequirements,
+                          empEmail: widget
+                              .jobPosted!.empEmail,
+                          empPhone: widget
+                              .jobPosted!.empPhone,
+                          orgAddress: widget
+                              .jobPosted!.jobAddress,
                           jsName: jsProfile.jsName,
                           jsPhone: jsProfile.jsPhone,
                           jsEmail: jsProfile.email,
-                          jsAddress: jsProfile.jsAddress,
-                          jsAboutMe: jsProfile.jsAboutMe,
+                          jsAddress:
+                          jsProfile.jsAddress,
+                          jsAboutMe:
+                          jsProfile.jsAboutMe,
                           jsSkills: jsProfile.jsSkills,
-                          jsExperience: jsProfile.jsJobXp,
-                          jsImageUrl: jsProfile.jsImageUrl,
+                          jsExperience:
+                          jsProfile.jsJobXp,
+                          jsImageUrl:
+                          jsProfile.jsImageUrl,
                         );
 
                         //Saving AppliedJob oject to Applied jobs collection
 
                         await SavedJobsDBService
                             .saveSavedJobData(
-                            savedJobData:
-                            appliedJob.toJson());
+                            savedJobData: appliedJob
+                                .toJson());
                         setState(() {
                           isSaved = true;
                         });

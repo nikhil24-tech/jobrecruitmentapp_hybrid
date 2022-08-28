@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jobrecruitmentapp_hybrid/screens/Employer/HomeScreenPages/my_jobs_applications.dart';
 import 'package:jobrecruitmentapp_hybrid/screens/Employer/HomeScreenPages/search_page.dart';
 import '../../constants/style.dart';
 import '../../widgets/exit_confirmation_dialog.dart';
@@ -20,7 +21,7 @@ class _EmployerHomeScreenState extends State<EmployerHomeScreen> {
     Center(child: jobsPage()),
     Center(child: SearchPage()),
     Center(child: AddEditJobsPage()),
-    //Center(child: JobApplicationPage()),
+    Center(child: JobApplicationPage()),
     Center(child: SettingsPage()),
   ];
 
