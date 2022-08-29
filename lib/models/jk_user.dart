@@ -61,35 +61,36 @@ class JKUser {
     this.jsAboutMe,
   });
 
-  JKUser.fromDocument(QueryDocumentSnapshot data) {
+  JKUser.fromDocument(QueryDocumentSnapshot d) {
+    Map data = d.data() as Map;
     //common fields for all users
-    userType = data.get('userType');
-    email = data.get('email') ?? "Enter email";
-    password = data.get('password') ?? "Enter Password";
-    uid = data.get('uid') ?? "Enter UID";
-    isBlocked = data.get('isBlocked') ?? false;
+    userType = data['userType'];
+    email = data['email'] ?? "Enter email";
+    password = data['password'] ?? "Enter Password";
+    uid = data['uid'] ?? "Enter UID";
+    isBlocked = data['isBlocked'] ?? false;
 
     //employer specific fields
 
-    empName = data.get('empName') ?? "Enter empName";
-    orgImageUrl = data.get('orgImageUrl') ?? kLogoImageUrl;
-    empPhone = data.get('empPhone') ?? "Enter Phone";
-    orgType = data.get('orgType') ?? "Enter Organisation Type";
-    orgName = data.get('orgName') ?? "Enter Organisation Name";
-    orgAddress = data.get('orgAddress') ?? "Enter orgLocation ";
-    orgLocation = data.get('orgLocation') ?? "Enter orgLocation";
+    empName = data['empName'] ?? "Enter empName";
+    orgImageUrl = data['orgImageUrl'] ?? kLogoImageUrl;
+    empPhone = data['empPhone'] ?? "Enter Phone";
+    orgType = data['orgType'] ?? "Enter Organisation Type";
+    orgName = data['orgName'] ?? "Enter Organisation Name";
+    orgAddress = data['orgAddress'] ?? "Enter orgLocation ";
+    orgLocation = data['orgLocation'] ?? "Enter orgLocation";
 
     //jobseeker specific fields
-    jsName = data.get('jsName') ?? "Enter Name";
-    jsImageUrl = data.get('jsImageUrl') ?? kLogoImageUrl;
-    jsPhone = data.get('jsPhone') ?? "Enter Phone";
-    jsOccupation = data.get('jsOccupation') ?? "Enter Occupation";
-    jsAddress = data.get('jsAddress') ?? "Enter Address";
-    jsLocation = data.get('jsLocation') ?? "Enter Location";
-    jsEduLevel = data.get('jsEduLevel') ?? "Enter Education Level";
-    jsJobXp = data.get('jsJobXp') ?? "Enter Job Experience";
-    jsSkills = data.get('jsSkills') ?? "Enter Skills";
-    jsAboutMe = data.get('jsAboutMe') ?? "Enter About Me";
+    jsName = data['jsName'] ?? "Enter Name";
+    jsImageUrl = data['jsImageUrl'] ?? kLogoImageUrl;
+    jsPhone = data['jsPhone'] ?? "Enter Phone";
+    jsOccupation = data['jsOccupation'] ?? "Enter Occupation";
+    jsAddress = data['jsAddress'] ?? "Enter Address";
+    jsLocation = data['jsLocation'] ?? "Enter Location";
+    jsEduLevel = data['jsEduLevel'] ?? "Enter Education Level";
+    jsJobXp = data['jsJobXp'] ?? "Enter Job Experience";
+    jsSkills = data['jsSkills'] ?? "Enter Skills";
+    jsAboutMe = data['jsAboutMe'] ?? "Enter About Me";
   }
 
   Map<String, dynamic> toJson() {

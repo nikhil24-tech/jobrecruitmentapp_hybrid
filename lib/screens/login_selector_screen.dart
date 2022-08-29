@@ -5,13 +5,11 @@ import '../controllers/social_sign_in_controller.dart';
 import '../controllers/navigate_to_home_screen.dart';
 import '../models/jk_user.dart';
 import '../services/job_kart_db_service.dart';
-import '../widgets/motion_toasts.dart';
 import 'Employer/create_profile_emp_screen.dart';
 import 'JobSeeker/js_create_profile.dart';
 import 'email_login.dart';
 import 'email_sign_up.dart';
 import 'user_type_select.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginSelectorScreen extends StatefulWidget {
   UserType userType;
@@ -79,7 +77,7 @@ class _LoginSelectorScreenState extends State<LoginSelectorScreen> {
                   final fBookSignInProvider =
                   Provider.of<FBookSignInProvider>(context, listen: false);
                   await fBookSignInProvider.fBookLogin();
-                  if (fBookSignInProvider.isNewUser == true) {
+                  if (fBookSignInProvider.isNewUser ?? false) {
                     //Add user details to database
                     var userData = widget.userType == UserType.employer
                     //During email sign up if the user clicks I'm Employer,

@@ -24,12 +24,12 @@ class AdminEmpSummaryWidget extends StatelessWidget {
                 width: 66,
                 child: empUser.orgImageUrl != null
                     ? CircleAvatar(
-                        backgroundImage:
-                            Image.network(empUser.orgImageUrl!).image,
-                      )
+                  backgroundImage:
+                  Image.network(empUser.orgImageUrl!).image,
+                )
                     : CircleAvatar(
-                        backgroundColor: Color(0xFFD9D9D9),
-                      ),
+                  backgroundColor: Color(0xFFD9D9D9),
+                ),
               ),
               SizedBox(width: 11),
               Column(

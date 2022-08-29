@@ -49,7 +49,7 @@ class _JobSeekersAppliedPageState extends State<JobSeekersAppliedPage> {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return Text('appliedjobs', style: kHeading2BoldStyle);
+                  return Text('Error: ${snapshot.error}');
                 } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                   final appliedJobs = snapshot.data!.docs
                       .map((doc) => AppliedJob.fromDocument(doc))
