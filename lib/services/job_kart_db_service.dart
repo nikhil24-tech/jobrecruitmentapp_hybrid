@@ -30,13 +30,18 @@ class JobsDBService {
   static Future<List<JobProfile>?> searchJobs(String searchKeyword) async {
     //write a function to search for jobs based on the search keywords
     try {
-      QuerySnapshot querySnapshot = await jobCollectionReferece
-          .where('jobName', isGreaterThanOrEqualTo: searchKeyword)
-          .get();
+      QuerySnapshot querySnapshot =
+      await jobCollectionReferece.where('jobName').get();
       List<JobProfile> jobs = querySnapshot.docs.map((doc) {
         return JobProfile.fromDocument(doc);
       }).toList();
-      return jobs;
+      List<JobProfile> temp = [];
+      for (var job in jobs) {
+        if (job.jobName!.toLowerCase().contains(searchKeyword.toLowerCase())) {
+          temp.add(job);
+        }
+      }
+      return temp;
     } on FirebaseException catch (error) {
       print(error.message);
       return null;
@@ -178,7 +183,7 @@ class AppliedJobsDBService {
       try {
         final mailer = Mailer(
             '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');
-        final toAddress = Address('nknikhil2497@gmail.com');
+        final toAddress = Address(appliedJobData['jsEmail'] ?? "");
         final fromAddress = Address('jobkart7722@gmail.com');
         final content = Content('text/plain',
             '''Congratulations!, You have successfully applied for this job.
@@ -186,7 +191,7 @@ class AppliedJobsDBService {
             Title - ${appliedJobData['jobName'] ?? ""}
 
         ''');
-        final subject = 'Hello Subject!';
+        final subject = 'Job Applied!';
         final personalization = Personalization([toAddress]);
 
         final email =
