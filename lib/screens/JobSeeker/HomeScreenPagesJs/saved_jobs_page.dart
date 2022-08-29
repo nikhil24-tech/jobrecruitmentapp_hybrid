@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jobrecruitmentapp_hybrid/main.dart';
 import '../../../constants/style.dart';
 import '../../../controllers/job_saved_applied_checker.dart';
 import '../../../models/job_profile.dart';
@@ -23,8 +23,8 @@ class _SavedJobsPageState extends State<SavedJobsPage> {
 
   getuserDetails() async {
     //get the email from shared prefs
-    final userDataCache = await SharedPreferences.getInstance();
     userEmail = userDataCache.getString("loggedInUserEmail")!;
+    setState(() {});
   }
 
   @override
@@ -54,29 +54,9 @@ class _SavedJobsPageState extends State<SavedJobsPage> {
                 } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                   //Get a list of all the jobs posted by all employers
 
-                  final allJobs = snapshot.data!.docs
+                  final savedJobs = snapshot.data!.docs
                       .map((doc) => JobProfile.fromDocument(doc))
                       .toList();
-                  //getting logged in user email
-
-                  //Get a list of all the jobs saved by the user
-                  List<JobProfile> savedJobs = [];
-                  for (var job in allJobs) {
-                    savedJobs.add(job);
-                    // if (job.jsSavedAndApplied != []) {
-                    //   bool savedJobCondition = job.jsSavedAndApplied!
-                    //       .where((jsSavedAndApplied) =>
-                    //           jsSavedAndApplied["jsEmail"] == userEmail &&
-                    //           jsSavedAndApplied["isSaved"] == true &&
-                    //           jsSavedAndApplied["isApplied"] == false)
-                    //       .isNotEmpty;
-                    //   if (savedJobCondition == true) {
-
-                    //   }
-                    // }
-                  }
-
-                  //Build a list view of jobs posted by employer
                   return JSSavedJobsView(
                       savedJobs: savedJobs, userEmail: userEmail!);
                 } else if (snapshot.connectionState ==
