@@ -34,7 +34,8 @@ dependencies:
   firebase_storage: ^10.3.1
   flutter:
     sdk: flutter
-  flutter_facebook_auth: ^4.4.0
+  # flutter_facebook_auth: ^4.4.1
+  flutter_login_facebook: ^1.6.0
   font_awesome_flutter: ^10.1.0
   geolocator: ^9.0.1
   get: ^4.6.5

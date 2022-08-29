@@ -113,8 +113,9 @@ class _LoginSelectorScreenState extends State<LoginSelectorScreen> {
                     );
                   } else {
                     navigateToHomeScreen(
-                        userCred: fBookSignInProvider.firebaseUser!,
-                        context: context);
+                      userCred: fBookSignInProvider.firebaseUser!,
+                      context: context,
+                    );
                   }
                 },
               ),
