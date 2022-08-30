@@ -23,45 +23,46 @@ class AppliedJob {
 
   AppliedJob(
       {this.jobID,
-      this.jsName,
-      this.jobName,
-      this.jobLocation,
-      this.jsPhone,
-      this.jsEmail,
-      this.jsAddress,
-      this.jsAboutMe,
-      this.jsSkills,
-      this.jsExperience,
-      this.jsImageUrl,
-      this.orgType,
-      this.salaryPerHr,
-      this.jobDescription,
-      this.requirements,
-      this.empEmail,
-      this.empPhone,
-      this.orgAddress,
-      this.isApproved});
+        this.jsName,
+        this.jobName,
+        this.jobLocation,
+        this.jsPhone,
+        this.jsEmail,
+        this.jsAddress,
+        this.jsAboutMe,
+        this.jsSkills,
+        this.jsExperience,
+        this.jsImageUrl,
+        this.orgType,
+        this.salaryPerHr,
+        this.jobDescription,
+        this.requirements,
+        this.empEmail,
+        this.empPhone,
+        this.orgAddress,
+        this.isApproved});
 
   AppliedJob.fromDocument(QueryDocumentSnapshot data) {
-    jobID = data.get('jobID');
-    jobName = data.get('jobName');
-    jobLocation = data.get('jobLocation');
-    jsName = data.get('jsName');
-    jsPhone = data.get('jsPhone');
-    jsEmail = data.get('jsEmail');
-    jsAddress = data.get('jsAddress');
-    jsAboutMe = data.get('jsAboutMe');
-    jsSkills = data.get('jsSkills');
-    jsExperience = data.get('jsExperience');
-    jsImageUrl = data.get('jsImageUrl');
-    orgType = data.get('orgType');
-    salaryPerHr = data.get('salaryPerHr');
-    jobDescription = data.get('jobDescription');
-    requirements = data.get('requirements');
-    empEmail = data.get('empEmail');
-    empPhone = data.get('empPhone');
-    orgAddress = data.get('orgAddress');
-    isApproved = data.get('isApproved');
+    Map m = data.data() as Map;
+    jobID = m['jobID'] ?? "";
+    jobName = m['jobName'] ?? "";
+    jobLocation = m['jobLocation'] ?? "";
+    jsName = m['jsName'] ?? "";
+    jsPhone = m['jsPhone'] ?? "";
+    jsEmail = m['jsEmail'] ?? "";
+    jsAddress = m['jsAddress'] ?? "";
+    jsAboutMe = m['jsAboutMe'] ?? "";
+    jsSkills = m['jsSkills'] ?? "";
+    jsExperience = m['jsExperience'] ?? "";
+    jsImageUrl = m['jsImageUrl'] ?? "";
+    orgType = m['orgType'] ?? "";
+    salaryPerHr = m['salaryPerHr'] ?? "";
+    jobDescription = m['jobDescription'] ?? "";
+    requirements = m['requirements'] ?? "";
+    empEmail = m['empEmail'] ?? "";
+    empPhone = m['empPhone'] ?? "";
+    orgAddress = m['orgAddress'] ?? "";
+    isApproved = m['isApproved'] ?? false;
   }
 
   Map<String, dynamic> toJson() {

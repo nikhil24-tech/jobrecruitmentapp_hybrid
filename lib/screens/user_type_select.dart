@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jobrecruitmentapp_hybrid/controllers/social_sign_in_controller.dart';
+import 'package:provider/provider.dart';
 import '../constants/style.dart';
 import 'login_selector_screen.dart';
 import 'email_login.dart';
@@ -63,8 +65,14 @@ class UserTypeSelectScreen extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => LoginSelectorScreen(
-                          userType: UserType.employer,
+                        builder: (context) => MultiProvider(
+                          providers: [
+                            ChangeNotifierProvider(
+                                create: (_) => FBookSignInProvider()),
+                          ],
+                          child: LoginSelectorScreen(
+                            userType: UserType.employer,
+                          ),
                         )));
               },
             ),
@@ -77,8 +85,14 @@ class UserTypeSelectScreen extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => LoginSelectorScreen(
-                          userType: UserType.jobseeker,
+                        builder: (context) => MultiProvider(
+                          providers: [
+                            ChangeNotifierProvider(
+                                create: (_) => FBookSignInProvider()),
+                          ],
+                          child: LoginSelectorScreen(
+                            userType: UserType.jobseeker,
+                          ),
                         )));
               },
             ),

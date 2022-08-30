@@ -93,7 +93,58 @@ class JSAppliedJobsView extends StatelessWidget {
       child: ListView.builder(
         itemCount: appliedJobs.length,
         itemBuilder: ((context, index) {
-          return Column(
+          return Container(
+            margin: EdgeInsets.all(14),
+            padding: EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: Color(0xAAE2E1E1),
+              borderRadius: BorderRadius.circular(23),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        appliedJobs[index].jobName!.length > 18
+                            ? (appliedJobs[index].jobName!.substring(0, 15)) +
+                            '...'
+                            : appliedJobs[index].jobName!,
+                        style: kHeading2BoldStyle.copyWith(
+                            color: Color(0xFF112E6F))),
+                    SizedBox(height: 5),
+                    Text(appliedJobs[index].orgType ?? "OrgType",
+                        style: kHeading3DarkStyle),
+                    SizedBox(height: 5),
+                    Text(appliedJobs[index].jobLocation ?? "location",
+                        style: kAppTextDarkBoldStyle),
+                    Chip(
+                      label: Text(
+                          '\$ ${appliedJobs[index].salaryPerHr ?? "20"} per hour',
+                          style: kAppTextBoldWhiteStyle),
+                      backgroundColor: kThemeColor1,
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        ElevatedButton(
+                            style: kSmallButtonStyle,
+                            child: Text("Applied"),
+                            onPressed: null),
+                        SizedBox(height: 17),
+                        Text(""),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           );
         }),
       ),

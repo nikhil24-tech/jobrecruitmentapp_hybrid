@@ -92,22 +92,22 @@ class _AppliedJobsViewState extends State<AppliedJobsView> {
   Widget build(BuildContext context) {
     return widget.appliedJobs.length == 0
         ? Center(
-            child: Text('No job applicants', style: kHeading2BoldStyle),
-          )
+      child: Text('No job applicants', style: kHeading2BoldStyle),
+    )
         : Flexible(
-            child: ListView.builder(
-              itemCount: widget.appliedJobs.length,
-              itemBuilder: ((context, index) {
-                return Column(
-                  children: [
-                    CandidateSummaryWidget(
-                      appliedJob: widget.appliedJobs[index],
-                    ),
-                    SizedBox(height: 15),
-                  ],
-                );
-              }),
-            ),
+      child: ListView.builder(
+        itemCount: widget.appliedJobs.length,
+        itemBuilder: ((context, index) {
+          return Column(
+            children: [
+              CandidateSummaryWidget(
+                appliedJob: widget.appliedJobs[index],
+              ),
+              SizedBox(height: 15),
+            ],
           );
+        }),
+      ),
+    );
   }
 }

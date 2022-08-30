@@ -24,12 +24,12 @@ class AdminJSSummaryWidget extends StatelessWidget {
                 width: 66,
                 child: jsUser.jsImageUrl != null
                     ? CircleAvatar(
-                        backgroundImage:
-                            Image.network(jsUser.jsImageUrl!).image,
-                      )
+                  backgroundImage:
+                  Image.network(jsUser.jsImageUrl!).image,
+                )
                     : CircleAvatar(
-                        backgroundColor: Color(0xFFD9D9D9),
-                      ),
+                  backgroundColor: Color(0xFFD9D9D9),
+                ),
               ),
               SizedBox(width: 11),
               Column(

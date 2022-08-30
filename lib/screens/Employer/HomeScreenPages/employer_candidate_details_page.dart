@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:motion_toast/motion_toast.dart';
 import '../../../constants/style.dart';
@@ -28,9 +27,14 @@ class _EmployerCandidateDetailsPageState
             padding: EdgeInsets.symmetric(horizontal: 23),
             width: double.maxFinite,
             child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               SizedBox(height: 12),
-              Align(child: Text("JobKart", style: kSmallLogoTextStyle)),
+              Align(
+                child: Text(
+                  "JobKart",
+                  style: kSmallLogoTextStyle,
+                ),
+              ),
               SizedBox(height: 12),
               Container(
                 padding: EdgeInsets.all(20),
@@ -48,9 +52,9 @@ class _EmployerCandidateDetailsPageState
                           child: widget.appliedJob.jsImageUrl == null
                               ? CircleAvatar(backgroundColor: Color(0xFFD9D9D9))
                               : CircleAvatar(
-                                  backgroundImage: Image.network(
-                                          widget.appliedJob.jsImageUrl!)
-                                      .image),
+                              backgroundImage: Image.network(
+                                  widget.appliedJob.jsImageUrl!)
+                                  .image),
                         ),
                         SizedBox(width: 11),
                         Column(
@@ -119,89 +123,89 @@ class _EmployerCandidateDetailsPageState
                     // if isApproved is null a decision is not made and hence both buttons are visible
                     widget.appliedJob.isApproved == null
                         ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              ElevatedButton(
-                                style: kSmallButtonStyle,
-                                child: Text("Approve"),
-                                onPressed: () async {
-                                  await AppliedJobsDBService.approveJob(
-                                      jobID: widget.appliedJob.jobID!);
-                                  Navigator.pop(context);
-                                  MotionToast.success(
-                                          description: Text("Approved",
-                                              style: kBigButtonTextStyle))
-                                      .show(context);
-                                },
-                              ),
-                              SizedBox(width: 17),
-                              ElevatedButton(
-                                style: kSmallButtonStyle.copyWith(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        kDeleteRedColor)),
-                                child: Text("Reject"),
-                                onPressed: () async {
-                                  await AppliedJobsDBService.rejectJob(
-                                      jobID: widget.appliedJob.jobID!);
-                                  Navigator.pop(context);
-                                  MotionToast.error(
-                                          description: Text("Rejected",
-                                              style: kBigButtonTextStyle))
-                                      .show(context);
-                                },
-                              ),
-                            ],
-                          )
-                        // if isApproved is not null a decision IS made and hence only on button is active
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          style: kSmallButtonStyle,
+                          child: Text("Approve"),
+                          onPressed: () async {
+                            await AppliedJobsDBService.approveJob(
+                                jobID: widget.appliedJob.jobID!);
+                            Navigator.pop(context);
+                            MotionToast.success(
+                                description: Text("Approved",
+                                    style: kBigButtonTextStyle))
+                                .show(context);
+                          },
+                        ),
+                        SizedBox(width: 17),
+                        ElevatedButton(
+                          style: kSmallButtonStyle.copyWith(
+                              backgroundColor: MaterialStateProperty.all(
+                                  kDeleteRedColor)),
+                          child: Text("Reject"),
+                          onPressed: () async {
+                            await AppliedJobsDBService.rejectJob(
+                                jobID: widget.appliedJob.jobID!);
+                            Navigator.pop(context);
+                            MotionToast.error(
+                                description: Text("Rejected",
+                                    style: kBigButtonTextStyle))
+                                .show(context);
+                          },
+                        ),
+                      ],
+                    )
+                    // if isApproved is not null a decision IS made and hence only on button is active
 
                         : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              ElevatedButton(
-                                style: kSmallButtonStyle,
-                                child: widget.appliedJob.isApproved == true
-                                    ? Text("Approved")
-                                    : Text("Approve"),
-                                onPressed: widget.appliedJob.isApproved == true
-                                    ? null
-                                    : () async {
-                                        await AppliedJobsDBService.approveJob(
-                                            jobID: widget.appliedJob.jobID!);
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          style: kSmallButtonStyle,
+                          child: widget.appliedJob.isApproved == true
+                              ? Text("Approved")
+                              : Text("Approve"),
+                          onPressed: widget.appliedJob.isApproved == true
+                              ? null
+                              : () async {
+                            await AppliedJobsDBService.approveJob(
+                                jobID: widget.appliedJob.jobID!);
 
-                                        Navigator.pop(context);
-                                        MotionToast.success(
-                                                description: Text("Approved",
-                                                    style: kBigButtonTextStyle))
-                                            .show(context);
-                                      },
-                              ),
-                              SizedBox(width: 17),
-                              ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(23)),
-                                      fixedSize: Size(138, 39),
-                                      textStyle: kSmallButtonTextStyle,
-                                      primary: kDeleteRedColor),
-                                  child: widget.appliedJob.isApproved == true
-                                      ? Text("Reject")
-                                      : Text("Rejected"),
-                                  onPressed: widget.appliedJob.isApproved ==
-                                          true
-                                      ? () async {
-                                          await AppliedJobsDBService.rejectJob(
-                                              jobID: widget.appliedJob.jobID!);
-                                          Navigator.pop(context);
-                                          MotionToast.error(
-                                                  description: Text("Rejected",
-                                                      style:
-                                                          kBigButtonTextStyle))
-                                              .show(context);
-                                        }
-                                      : null),
-                            ],
-                          )
+                            Navigator.pop(context);
+                            MotionToast.success(
+                                description: Text("Approved",
+                                    style: kBigButtonTextStyle))
+                                .show(context);
+                          },
+                        ),
+                        SizedBox(width: 17),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(23)),
+                                fixedSize: Size(138, 39),
+                                textStyle: kSmallButtonTextStyle,
+                                primary: kDeleteRedColor),
+                            child: widget.appliedJob.isApproved == true
+                                ? Text("Reject")
+                                : Text("Rejected"),
+                            onPressed: widget.appliedJob.isApproved ==
+                                true
+                                ? () async {
+                              await AppliedJobsDBService.rejectJob(
+                                  jobID: widget.appliedJob.jobID!);
+                              Navigator.pop(context);
+                              MotionToast.error(
+                                  description: Text("Rejected",
+                                      style:
+                                      kBigButtonTextStyle))
+                                  .show(context);
+                            }
+                                : null),
+                      ],
+                    )
                   ],
                 ),
               ),

@@ -1,11 +1,13 @@
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:jobrecruitmentapp_hybrid/constants/style.dart';
+import 'package:jobrecruitmentapp_hybrid/models/jk_user.dart';
+import 'package:jobrecruitmentapp_hybrid/services/location_sevices.dart';
+import 'package:sendgrid_mailer/sendgrid_mailer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../constants/style.dart';
-import '../models/jk_user.dart';
 import '../models/job_profile.dart';
-
 
 // Jobs Collection and helper methods
 
@@ -21,19 +23,25 @@ class JobsDBService {
     } on FirebaseException catch (error) {
       print(error.message);
     }
+    return null;
   }
   //write a function to search for jobs based on the search keywords
 
   static Future<List<JobProfile>?> searchJobs(String searchKeyword) async {
     //write a function to search for jobs based on the search keywords
     try {
-      QuerySnapshot querySnapshot = await jobCollectionReferece
-          .where('jobName', isGreaterThanOrEqualTo: searchKeyword)
-          .get();
+      QuerySnapshot querySnapshot =
+      await jobCollectionReferece.where('jobName').get();
       List<JobProfile> jobs = querySnapshot.docs.map((doc) {
         return JobProfile.fromDocument(doc);
       }).toList();
-      return jobs;
+      List<JobProfile> temp = [];
+      for (var job in jobs) {
+        if (job.jobName!.toLowerCase().contains(searchKeyword.toLowerCase())) {
+          temp.add(job);
+        }
+      }
+      return temp;
     } on FirebaseException catch (error) {
       print(error.message);
       return null;
@@ -76,23 +84,24 @@ class JobsDBService {
 
   //write a function to update a doc and append to jsSavedAndApplied list field
 
-  static Future<void> jsSaveJob({required JobProfile jobProfile}) async {
-    //get the email from shared prefs
-    final userDataCache = await SharedPreferences.getInstance();
-    final userEmail = userDataCache.getString("loggedInUserEmail")!;
+//   static Future<void> jsSaveJob({required JobProfile jobProfile}) async {
+//     //get the email from shared prefs
+//     final userDataCache = await SharedPreferences.getInstance();
+//     final userEmail = userDataCache.getString("loggedInUserEmail")!;
+// //!Saved Jobs ka table bnna chiye
 
-    await jobCollectionReferece.doc(jobProfile.jobID).update({
-      'jsSavedAndApplied': FieldValue.arrayUnion([
-        {"jsEmail": userEmail, "isSaved": true, "isApplied": false}
-      ])
-    });
+//     await jobCollectionReferece.doc(jobProfile.jobID).update({
+//       'jsSavedAndApplied': FieldValue.arrayUnion([
+//         {"jsEmail": userEmail, "isSaved": true, "isApplied": false}
+//       ])
+//     });
 
-    await jobCollectionReferece.doc(jobProfile.jobID).update({
-      'jsSavedAndApplied': FieldValue.arrayRemove([
-        {"jsEmail": userEmail, "isSaved": false, "isApplied": false}
-      ])
-    });
-  }
+//     await jobCollectionReferece.doc(jobProfile.jobID).update({
+//       'jsSavedAndApplied': FieldValue.arrayRemove([
+//         {"jsEmail": userEmail, "isSaved": false, "isApplied": false}
+//       ])
+//     });
+//   }
 
   // write a function to change the isSaved field to false to unsave job
 
@@ -166,7 +175,33 @@ class AppliedJobsDBService {
   static Future<void> saveAppliedJobData({required appliedJobData}) async {
     //write a function to save JKUser model class data to firestore
     try {
-      await appliedJobCollectionReferece.add(appliedJobData);
+      Map pos = await determinePosition();
+      Map<String, dynamic> newMap = Map<String, dynamic>.from(appliedJobData);
+      newMap['lat'] = pos['lat'];
+      newMap['lng'] = pos['lng'];
+      await appliedJobCollectionReferece.add(newMap);
+      try {
+        final mailer = Mailer(
+            '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');
+        final toAddress = Address(appliedJobData['jsEmail'] ?? "");
+        final fromAddress = Address('jobkart7722@gmail.com');
+        final content = Content('text/plain',
+            '''Congratulations!, You have successfully applied for this job.
+            Job Details : 
+            Title - ${appliedJobData['jobName'] ?? ""}
+
+        ''');
+        final subject = 'Job Applied!';
+        final personalization = Personalization([toAddress]);
+
+        final email =
+        Email([personalization], fromAddress, subject, content: [content]);
+        mailer.send(email).then((result) {
+          print(result.toString());
+        });
+      } catch (e) {
+        print(e.toString());
+      }
     } on FirebaseException catch (error) {
       print(error.message);
     }
@@ -210,6 +245,90 @@ class AppliedJobsDBService {
       print(error.message);
     }
   }
+
+  static Future<bool> getWhetherJobisAppliedOrNot(
+      {required jobId, required jsEmail}) async {
+    //write a function to save JKUser model class data to firestore
+    try {
+      QuerySnapshot snapshot = await appliedJobCollectionReferece
+          .where("jobID", isEqualTo: jobId)
+          .where("jsEmail", isEqualTo: jsEmail)
+          .get();
+      if (snapshot.docs.isEmpty) {
+        return false;
+      } else {
+        return true;
+      }
+    } on FirebaseException catch (error) {
+      print(error.message);
+      return false;
+    }
+  }
+}
+
+//Applied Jobs Collection and helper methods
+
+class SavedJobsDBService {
+  static final CollectionReference savedJobCollectionReferece =
+  FirebaseFirestore.instance.collection('savedJobs');
+
+  static Future<void> saveSavedJobData({required savedJobData}) async {
+    //write a function to save JKUser model class data to firestore
+    try {
+      await savedJobCollectionReferece.add(savedJobData);
+    } on FirebaseException catch (error) {
+      print(error.message);
+    }
+  }
+
+  static Future<bool> getWhetherJobisSavedOrNot(
+      {required jobId, required jsEmail}) async {
+    //write a function to save JKUser model class data to firestore
+    try {
+      QuerySnapshot snapshot = await savedJobCollectionReferece
+          .where("jobID", isEqualTo: jobId)
+          .where("jsEmail", isEqualTo: jsEmail)
+          .get();
+      if (snapshot.docs.isEmpty) {
+        return false;
+      } else {
+        return true;
+      }
+    } on FirebaseException catch (error) {
+      print(error.message);
+      return false;
+    }
+  }
+// //write a function to update isApproved field to true in firestore based on jobID
+
+//   static Future<void> approveJob({required String jobID}) async {
+//     try {
+//       await savedJobCollectionReferece.doc(jobID).update({'isApproved': true});
+//     } on FirebaseException catch (error) {
+//       print(error.message);
+//     }
+//   }
+
+//   //write a function to update isApproved field to false in firestore based on jobID
+
+//   static Future<void> rejectJob({required String jobID}) async {
+//     try {
+//       await savedJobCollectionReferece.doc(jobID).update({'isApproved': false});
+//     } on FirebaseException catch (error) {
+//       print(error.message);
+//     }
+//   }
+
+  //write a function to delete all documents in savedJobCollectionReferece where jobID is equal to jobID
+  static Future<void> deleteAppliedJobByJobID(
+      {required String savedJobRefId}) async {
+    try {
+      var docsToBeDeleted =
+      await savedJobCollectionReferece.doc(savedJobRefId).delete();
+    } on FirebaseException catch (error) {
+      print(error.message);
+    }
+  }
 }
 
 // Users Collection and helper methods
@@ -239,6 +358,7 @@ class UserDBService {
     } on FirebaseException catch (error) {
       print(error.message);
     }
+    return null;
   }
 
   static Future<String?> uploadUserDPToFirebase(
@@ -261,6 +381,7 @@ class UserDBService {
     } else {
       return null;
     }
+    return null;
   }
 
   //write a function to update user data in userCollectionReferece based on uid

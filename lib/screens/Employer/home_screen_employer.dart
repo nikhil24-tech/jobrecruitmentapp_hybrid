@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jobrecruitmentapp_hybrid/screens/Employer/HomeScreenPages/my_jobs_applications.dart';
 import 'package:jobrecruitmentapp_hybrid/screens/Employer/HomeScreenPages/search_page.dart';
 import '../../constants/style.dart';
 import '../../widgets/exit_confirmation_dialog.dart';
 import '../../widgets/underlined_icon_widget.dart';
-import '../user_type_select.dart';
 import 'HomeScreenPages/add_edit_page.dart';
 
 import 'HomeScreenPages/jobs_page.dart';
 import 'HomeScreenPages/settings_page.dart';
-
 
 class EmployerHomeScreen extends StatefulWidget {
   @override
@@ -22,7 +21,7 @@ class _EmployerHomeScreenState extends State<EmployerHomeScreen> {
     Center(child: jobsPage()),
     Center(child: SearchPage()),
     Center(child: AddEditJobsPage()),
-    Center(child: jobsPage()),
+    Center(child: JobApplicationPage()),
     Center(child: SettingsPage()),
   ];
 

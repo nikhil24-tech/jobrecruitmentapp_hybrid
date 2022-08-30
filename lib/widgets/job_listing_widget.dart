@@ -11,8 +11,12 @@ class JobListingWidget extends StatelessWidget {
   bool isAdmin;
   JobProfile? jobProfile;
 
-  JobListingWidget(
-      {required this.isAdmin, required JobProfile this.jobProfile});
+  bool? showApplications;
+  JobListingWidget({
+    required this.isAdmin,
+    required JobProfile this.jobProfile,
+    this.showApplications = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +61,13 @@ class JobListingWidget extends StatelessWidget {
                     jobProfile!.orgImageUrl ?? kLogoImageUrl,
                   ),
                   errorBuilder: (ctx, exception, stackTrace) {
-                    return Image.network(kLogoImageUrl,
-                        height: 69,
-                        width:
-                        63); //THE WIDGET YOU WANT TO SHOW IF URL NOT RETURN IMAGE
+                    return SizedBox(
+                      height: 69,
+                      width: 63,
+                      child: Center(
+                        child: Icon(Icons.error),
+                      ),
+                    ); //THE WIDGET YOU WANT TO SHOW IF URL NOT RETURN IMAGE
                   },
                   height: 69,
                   width: 63),
@@ -75,6 +82,7 @@ class JobListingWidget extends StatelessWidget {
                       builder: (context) => JobDetailsPage(
                         isAdmin: isAdmin,
                         jobProfile: jobProfile!,
+                        showApplications: showApplications,
                       ),
                     ),
                   );

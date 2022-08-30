@@ -1,20 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:jobrecruitmentapp_hybrid/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../constants/style.dart';
 import '../../../models/job_profile.dart';
 import '../../../services/job_kart_db_service.dart';
 import '../../../widgets/job_listing_widget.dart';
 
-class jobsPage extends StatefulWidget {
+class JobApplicationPage extends StatefulWidget {
   @override
-  State<jobsPage> createState() => _jobsPageState();
+  State<JobApplicationPage> createState() => _JobApplicationPageState();
 }
 
 String? empLogoUrl;
 String? empEmail;
 
-class _jobsPageState extends State<jobsPage> {
+class _JobApplicationPageState extends State<JobApplicationPage> {
   @override
   void initState() {
     // TODO: implement initState
@@ -33,12 +34,12 @@ class _jobsPageState extends State<jobsPage> {
 
   setEmpImageUrlInCache() async {
     //get the email from shared prefs
-    final userDataCache = await SharedPreferences.getInstance();
     empEmail = userDataCache.getString("loggedInUserEmail");
     empLogoUrl = await UserDBService.getOrgImageUrl(empEmail!);
     // saving the image url in shared prefs
     await userDataCache.setString(
         'loggedInUserImageUrl', empLogoUrl ?? kLogoImageUrl);
+    setState(() {});
   }
 
   @override
@@ -58,28 +59,31 @@ class _jobsPageState extends State<jobsPage> {
           ),
           SizedBox(height: 12),
           StreamBuilder<QuerySnapshot<Map>>(
-              stream: FirebaseFirestore.instance.collection('jobs').snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-                  final jobsPostedByOrg = snapshot.data!.docs
-                      .map((doc) => JobProfile.fromDocument(doc))
-                      .toList();
+            stream: FirebaseFirestore.instance
+                .collection('jobs')
+                .where('empEmail', isEqualTo: empEmail)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                final jobsPostedByOrg = snapshot.data!.docs
+                    .map((doc) => JobProfile.fromDocument(doc))
+                    .toList();
 
-                  //Build a list view of jobs posted by employer
-                  return JobsPostedByOrgView(jobsPostedByOrg: jobsPostedByOrg);
-                } else if (snapshot.connectionState ==
-                    ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else {
-                  print("snapshot doesn't have data");
-                  return Center(
-                      child: Text('No Jobs to display',
-                          style: TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.w500)));
-                }
-              }),
+                //Build a list view of jobs posted by employer
+                return JobsPostedByOrgView(jobsPostedByOrg: jobsPostedByOrg);
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                print("snapshot doesn't have data");
+                return Center(
+                    child: Text('No Jobs to display',
+                        style: TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.w500)));
+              }
+            },
+          ),
         ],
       ),
     );
@@ -103,6 +107,7 @@ class JobsPostedByOrgView extends StatelessWidget {
               JobListingWidget(
                 isAdmin: false,
                 jobProfile: jobsPostedByOrg[index],
+                showApplications: true,
               ),
               SizedBox(height: 15),
             ],

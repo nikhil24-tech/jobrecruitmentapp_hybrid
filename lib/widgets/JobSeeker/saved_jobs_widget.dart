@@ -79,7 +79,8 @@ class SavedJobWidget extends StatelessWidget {
                     MaterialStateProperty.all(kDeleteRedColor)),
                 child: Text("Unsave Job"),
                 onPressed: () async {
-                  await JobsDBService.jsUnSaveJob(jobProfile: savedJob);
+                  await SavedJobsDBService.deleteAppliedJobByJobID(
+                      savedJobRefId: savedJob.jobID ?? "");
                 },
               ),
             ],
