@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
 import '../../../constants/style.dart';
 import '../../../models/jk_user.dart';
 import '../../../services/job_kart_db_service.dart';
+import 'js_udpate_profile_screen.dart';
 
 class JSProfileDetailsPage extends StatefulWidget {
   final String? userEmail;
@@ -25,7 +25,7 @@ class _JSProfileDetailsPageState extends State<JSProfileDetailsPage> {
 
   getUserDetails() async {
     jsDetails =
-        await UserDBService.getJobSeekerProfile(email: widget.userEmail!);
+    await UserDBService.getJobSeekerProfile(email: widget.userEmail!);
   }
 
   @override
@@ -64,12 +64,12 @@ class _JSProfileDetailsPageState extends State<JSProfileDetailsPage> {
                                   width: 66,
                                   child: jkUserSnapshot.data!.jsImageUrl == null
                                       ? CircleAvatar(
-                                          backgroundColor: Color(0xFFD9D9D9))
+                                      backgroundColor: Color(0xFFD9D9D9))
                                       : CircleAvatar(
-                                          backgroundImage: Image.network(
-                                                  jkUserSnapshot
-                                                      .data!.jsImageUrl!)
-                                              .image),
+                                      backgroundImage: Image.network(
+                                          jkUserSnapshot
+                                              .data!.jsImageUrl!)
+                                          .image),
                                 ),
                                 SizedBox(width: 11),
                                 Text(
@@ -140,7 +140,14 @@ class _JSProfileDetailsPageState extends State<JSProfileDetailsPage> {
                             ElevatedButton(
                               style: kBigButtonStyle,
                               child: Text("Update Profile"),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => JSUpdateProfilePage(
+                                          jsDetails: jsDetails),
+                                    ));
+                              },
                             ),
                           ],
                         ),

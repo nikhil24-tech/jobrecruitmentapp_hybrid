@@ -56,7 +56,7 @@ class _JSCreateProfileScreenState extends State<JSCreateProfileScreen> {
 //exists in Firebase and need to load it
     if (widget.docIdToUpdate == null) {
       JKUser jobSeekerProfile =
-          await UserDBService.getJobSeekerProfile(email: widget.userEmail!);
+      await UserDBService.getJobSeekerProfile(email: widget.userEmail!);
       setState(() {
         _addressController.text = jobSeekerProfile.jsAddress ?? "address";
         _locationController.text = jobSeekerProfile.jsLocation ?? "Location";
@@ -84,14 +84,14 @@ class _JSCreateProfileScreenState extends State<JSCreateProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 30),
-            width: double.maxFinite,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 30),
+          child: SingleChildScrollView(
             child: Form(
               key: _jsProfileFormKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text("JobKart", style: kBigLogoTextStyle),
                   SizedBox(height: 20),
@@ -181,44 +181,44 @@ class _JSCreateProfileScreenState extends State<JSCreateProfileScreen> {
                     style: kBigButtonStyle,
                     child: isuploading == true
                         ? Text("Updating Profile...",
-                            style: kBigButtonTextStyle)
+                        style: kBigButtonTextStyle)
                         : Text("Update Profile", style: kBigButtonTextStyle),
                     onPressed: isuploading == true
                         ? null
                         : () async {
-                            setState(() {
-                              isuploading = true;
-                            });
-                            if (_jsProfileFormKey.currentState!.validate()) {
-                              uploadedImageUrl =
-                                  await UserDBService.uploadUserDPToFirebase(
-                                      imageFile: image);
-                              var jsProfileData = {
-                                'userType': "jobseeker",
-                                'jsAddress': _addressController.text.trim(),
-                                'jsLocation': _locationController.text.trim(),
-                                'jsPhone': _phoneController.text.trim(),
-                                'jsOccupation':
-                                    _occupationController.text.trim(),
-                                'jsEduLevel': _eduLevelController.text.trim(),
-                                'jsJobXp': _jobXpController.text.trim(),
-                                'jsSkills': _skillsController.text.trim(),
-                                'jsAboutMe': _aboutMeController.text.trim(),
-                                'jsImageUrl': uploadedImageUrl ?? kLogoImageUrl,
-                              };
-                              await UserDBService.updateUserDataByDocID(
-                                  updateDocId: widget.docIdToUpdate,
-                                  userData: jsProfileData);
-                              setState(() {
-                                isuploading = false;
-                              });
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          JobSeekerHomeScreen()));
-                            }
-                          },
+                      setState(() {
+                        isuploading = true;
+                      });
+                      if (_jsProfileFormKey.currentState!.validate()) {
+                        uploadedImageUrl =
+                        await UserDBService.uploadUserDPToFirebase(
+                            imageFile: image);
+                        var jsProfileData = {
+                          'userType': "jobseeker",
+                          'jsAddress': _addressController.text.trim(),
+                          'jsLocation': _locationController.text.trim(),
+                          'jsPhone': _phoneController.text.trim(),
+                          'jsOccupation':
+                          _occupationController.text.trim(),
+                          'jsEduLevel': _eduLevelController.text.trim(),
+                          'jsJobXp': _jobXpController.text.trim(),
+                          'jsSkills': _skillsController.text.trim(),
+                          'jsAboutMe': _aboutMeController.text.trim(),
+                          'jsImageUrl': uploadedImageUrl ?? kLogoImageUrl,
+                        };
+                        await UserDBService.updateUserDataByDocID(
+                            updateDocId: widget.docIdToUpdate,
+                            userData: jsProfileData);
+                        setState(() {
+                          isuploading = false;
+                        });
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    JobSeekerHomeScreen()));
+                      }
+                    },
                   ),
                   SizedBox(height: 12)
                 ],
@@ -244,8 +244,8 @@ class _JSCreateProfileScreenState extends State<JSCreateProfileScreen> {
       });
     } else {
       MotionToast.info(
-              description: Text("Picture upload cancelled by user",
-                  style: kBigButtonTextStyle))
+          description: Text("Picture upload cancelled by user",
+              style: kBigButtonTextStyle))
           .show(context);
     }
   }

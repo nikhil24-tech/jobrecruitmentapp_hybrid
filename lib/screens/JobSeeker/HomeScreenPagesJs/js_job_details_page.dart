@@ -45,6 +45,7 @@ class _JSJobDetailsPageState extends State<JSJobDetailsPage> {
                     borderRadius: BorderRadius.circular(23)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,9 +53,12 @@ class _JSJobDetailsPageState extends State<JSJobDetailsPage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(widget.jobPosted!.jobName ?? "Job Name",
-                                style: kHeading2BoldStyle.copyWith(
-                                    color: Color(0xFF112E6F))),
+                            Text(
+                              widget.jobPosted!.jobName ?? "Job Name",
+                              style: kHeading2BoldStyle.copyWith(
+                                color: Color(0xFF112E6F),
+                              ),
+                            ),
                             SizedBox(height: 5),
                             Text(widget.jobPosted!.orgType ?? "orgType",
                                 style: kHeading3DarkStyle),
@@ -82,6 +86,7 @@ class _JSJobDetailsPageState extends State<JSJobDetailsPage> {
                     SizedBox(height: 15),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text("Job Description", style: kHeading3DarkBoldStyle),
                         SizedBox(height: 10),
@@ -114,8 +119,11 @@ class _JSJobDetailsPageState extends State<JSJobDetailsPage> {
                             "${widget.jobPosted!.jobAddress ?? "orgAddress"} \n${widget.jobPosted!.jobLocation ?? "location"}",
                             style: kAppRegularTextStyle),
                         SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        (widget.jobPosted!.applicantEmail ?? "").isNotEmpty
+                            ? Text("This Job is no longer available")
+                            : Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceEvenly,
                           children: [
                             ElevatedButton(
                               style: kSmallButtonStyle,
@@ -147,37 +155,47 @@ class _JSJobDetailsPageState extends State<JSJobDetailsPage> {
                                 JKUser jsProfile =
                                 await UserDBService
                                     .getJKProfile(
-                                    email: userEmail!);
+                                    email:
+                                    userEmail!);
 
                                 //Creating AppliedJob Object
-                                AppliedJob appliedJob = AppliedJob(
-                                  jobID: widget.jobPosted!.jobID,
-                                  jobName:
-                                  widget.jobPosted!.jobName,
-                                  orgType:
-                                  widget.jobPosted!.orgType,
-                                  jobLocation:
-                                  widget.jobPosted!.jobLocation,
-                                  salaryPerHr:
-                                  widget.jobPosted!.salaryPerHr,
+                                AppliedJob appliedJob =
+                                AppliedJob(
+                                  jobID:
+                                  widget.jobPosted!.jobID,
+                                  jobName: widget
+                                      .jobPosted!.jobName,
+                                  orgType: widget
+                                      .jobPosted!.orgType,
+                                  jobLocation: widget
+                                      .jobPosted!.jobLocation,
+                                  salaryPerHr: widget
+                                      .jobPosted!.salaryPerHr,
                                   jobDescription: widget
-                                      .jobPosted!.jobDescription,
+                                      .jobPosted!
+                                      .jobDescription,
                                   requirements: widget
-                                      .jobPosted!.jobRequirements,
-                                  empEmail:
-                                  widget.jobPosted!.empEmail,
-                                  empPhone:
-                                  widget.jobPosted!.empPhone,
-                                  orgAddress:
-                                  widget.jobPosted!.jobAddress,
+                                      .jobPosted!
+                                      .jobRequirements,
+                                  empEmail: widget
+                                      .jobPosted!.empEmail,
+                                  empPhone: widget
+                                      .jobPosted!.empPhone,
+                                  orgAddress: widget
+                                      .jobPosted!.jobAddress,
                                   jsName: jsProfile.jsName,
                                   jsPhone: jsProfile.jsPhone,
                                   jsEmail: jsProfile.email,
-                                  jsAddress: jsProfile.jsAddress,
-                                  jsAboutMe: jsProfile.jsAboutMe,
-                                  jsSkills: jsProfile.jsSkills,
-                                  jsExperience: jsProfile.jsJobXp,
-                                  jsImageUrl: jsProfile.jsImageUrl,
+                                  jsAddress:
+                                  jsProfile.jsAddress,
+                                  jsAboutMe:
+                                  jsProfile.jsAboutMe,
+                                  jsSkills:
+                                  jsProfile.jsSkills,
+                                  jsExperience:
+                                  jsProfile.jsJobXp,
+                                  jsImageUrl:
+                                  jsProfile.jsImageUrl,
                                 );
 
                                 //Saving AppliedJob oject to Applied jobs collection
@@ -185,7 +203,8 @@ class _JSJobDetailsPageState extends State<JSJobDetailsPage> {
                                 await SavedJobsDBService
                                     .saveSavedJobData(
                                     savedJobData:
-                                    appliedJob.toJson());
+                                    appliedJob
+                                        .toJson());
                                 setState(() {
                                   widget.isJobSaved = true;
                                 });

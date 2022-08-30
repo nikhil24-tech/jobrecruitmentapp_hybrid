@@ -68,7 +68,7 @@ class _UserProileAdminPageState extends State<UserProileAdminPage> {
           SizedBox(height: 20),
           StreamBuilder<QuerySnapshot<Map>>(
               stream:
-                  FirebaseFirestore.instance.collection('jk_users').snapshots(),
+              FirebaseFirestore.instance.collection('jk_users').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
@@ -106,19 +106,19 @@ class JKUserProfilesView extends StatelessWidget {
     return allUsers.length == 0
         ? Center(child: Text('No Users', style: kHeading2BoldStyle))
         : Flexible(
-            child: ListView.builder(
-              itemCount: allUsers.length,
-              itemBuilder: ((context, index) {
-                return Column(
-                  children: [
-                    allUsers[index].userType == "employer"
-                        ? AdminEmpSummaryWidget(empUser: allUsers[index])
-                        : AdminJSSummaryWidget(jsUser: allUsers[index]),
-                    SizedBox(height: 15),
-                  ],
-                );
-              }),
-            ),
+      child: ListView.builder(
+        itemCount: allUsers.length,
+        itemBuilder: ((context, index) {
+          return Column(
+            children: [
+              allUsers[index].userType == "employer"
+                  ? AdminEmpSummaryWidget(empUser: allUsers[index])
+                  : AdminJSSummaryWidget(jsUser: allUsers[index]),
+              SizedBox(height: 15),
+            ],
           );
+        }),
+      ),
+    );
   }
 }

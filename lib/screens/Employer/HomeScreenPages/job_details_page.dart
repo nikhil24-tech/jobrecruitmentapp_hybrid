@@ -174,7 +174,7 @@ class JobDetailsPage extends StatelessWidget {
         SizedBox(
           height: 10,
         ),
-        Text("Job Applicants"),
+        Text("Job Applications"),
         StreamBuilder<QuerySnapshot<Map>>(
           stream: FirebaseFirestore.instance
               .collection('appliedJobs')
@@ -207,7 +207,7 @@ class JobDetailsPage extends StatelessWidget {
             } else {
               print("snapshot doesn't have data");
               return Center(
-                  child: Text('Nobody is applied for this job yet',
+                  child: Text('No Applications to display',
                       style: TextStyle(
                           fontSize: 15, fontWeight: FontWeight.w500)));
             }

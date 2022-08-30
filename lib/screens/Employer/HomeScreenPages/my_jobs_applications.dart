@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:jobrecruitmentapp_hybrid/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../constants/style.dart';
 import '../../../models/job_profile.dart';
@@ -33,12 +34,12 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
 
   setEmpImageUrlInCache() async {
     //get the email from shared prefs
-    final userDataCache = await SharedPreferences.getInstance();
     empEmail = userDataCache.getString("loggedInUserEmail");
     empLogoUrl = await UserDBService.getOrgImageUrl(empEmail!);
     // saving the image url in shared prefs
     await userDataCache.setString(
         'loggedInUserImageUrl', empLogoUrl ?? kLogoImageUrl);
+    setState(() {});
   }
 
   @override
